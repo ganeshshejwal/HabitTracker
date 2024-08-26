@@ -13,11 +13,9 @@ import lombok.*;
 @AllArgsConstructor
 public class HabitLog {
 
-    @Id
     @Column(name = "user_id")
     private Integer userId;
 
-    @Id
     @Column(name = "habit_id")
     private Integer habitId;
 

@@ -112,6 +112,7 @@ public class HabitRepeat {
     private Integer noOfTimesInDay = 0;
 
     @OneToOne
-    @JoinColumn(name = "habit_id", insertable = false, updatable = false)
+    @MapsId
+    @JoinColumn(name = "habit_id")
     private HabitDetails habitDetails;
 }
