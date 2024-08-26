@@ -18,15 +18,6 @@ public class HabitDetails {
     @Column(name = "habit_name", nullable = false)
     private String habitName;
 
-    @Column(name = "target", nullable = false)
-    private String target;
-
-    @Column(name = "start_time", nullable = false)
-    private String startTime;
-
-    @Column(name = "end_time", nullable = false)
-    private String endTime;
-
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;
 }
