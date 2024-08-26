@@ -11,6 +11,23 @@ toggleSidebar.addEventListener("click", () => {
   sidebarIcon.classList.toggle("fa-times");
 });
 
+//Radio List of Habits
+function toggleRadioList() {
+  var radioList = document.getElementById("radioList");
+  if (radioList.style.display === "none" || radioList.style.display === "") {
+      radioList.style.display = "block";
+  } else {
+      radioList.style.display = "none";
+  }
+}
+
+// Radio Value to Input
+function setInputValue(value) {
+  var inputField = document.getElementById("habitName");
+  inputField.value = value;
+  toggleRadioList(); 
+}
+
 // Repeat Habit
 const monthsBtn = document.getElementById("months-btn");
 const weeksBtn = document.getElementById("weeks-btn");

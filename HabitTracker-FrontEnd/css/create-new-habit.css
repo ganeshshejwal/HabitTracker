@@ -104,6 +104,35 @@
 	margin-left: 10px;
 }
 
+#habitName::placeholder{
+	color: #222121;
+}
+
+.input-icon {
+    position: relative;
+}
+
+.input-icon i {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #141313; 
+	cursor: pointer;
+}
+
+.input-icon .form-control {
+    padding-left: 30px; 
+}
+
+.radio-list {
+    margin-top: 10px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+}
+
 #months-btn {
 	background-color: #535da1;
 	color: #fff;
