@@ -1,7 +1,7 @@
 package com.application.habittracker.entity;
 
 import java.sql.Date;
-
+import java.util.List;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,17 +29,17 @@ public class HabitLog {
     @Column(name = "end_time", nullable = false)
     private String endTime;
 
-    @Column(name = "target")
-    private String target;
+    @Column (name = "habit_target_in_times")
+    private String targetTime;
 
-    @Column(name = "target_measure")
-    private String targetMeasure;
+    @Column (name = "habit_target_in_measure")
+    private List<Integer> targetMeasure;
+
+    @Column (name = "habit_target_in_measure_description")
+    private List<Integer> targetMeasureDescription;
 
     @Column(name = "no_of_times")
     private int noOfTimes;
-
-    @Column(name ="per_day_or_other")
-    private String perDayOrOther;
 
     @Column(name = "habit_description")
     private String habitDescription;
