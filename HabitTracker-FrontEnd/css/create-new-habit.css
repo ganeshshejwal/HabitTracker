@@ -1,34 +1,94 @@
+:root {
+	--secondary-color: #ffffff;
+	--sidebar-width: 250px;
+	--sidebar-small-width: 60px;
+	--icon-size: 20px;
+	--icon-container-size: 60px;
+}
+
+.sidebar {
+	background-color: var(--secondary-color);
+	height: 100vh;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: var(--sidebar-width);
+	transition: width 0.3s ease-in-out;
+	overflow-x: hidden;
+	box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar .img {
+	position: relative;
+	top: 50px;
+	margin-left: 10px;
+}
+
+.img span {
+	color: #0d6efd;
+	font-size: 28px;
+	font-weight: 600;
+	margin-left: 8px;
+	margin-top: 8px;
+}
+
+.sidebar ul {
+	list-style: none;
+	padding: 0;
+	position: relative;
+	top: 55px;
+	margin: 30px 0 0 0;
+}
+
+.sidebar a {
+	color: #000000c2;
+	text-decoration: none;
+	display: flex;
+	align-items: center;
+	transition: all 0.3s ease-in-out;
+	white-space: nowrap;
+}
+
+img {
+	width: 45px;
+	height: 45px;
+}
+.sidebar .icon-container {
+	width: var(--icon-container-size);
+	height: var(--icon-container-size);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+	color: var(--primary-color);
+}
+
+.sidebar .icon-container:hover {
+	background-color: #0d6efd;
+	color: beige;
+}
+
+.sidebar a i {
+	font-size: var(--icon-size);
+	transition: all 0.3s ease-in-out;
+}
+
+.sidebar a span {
+	transition: opacity 0.3s ease-in-out;
+	opacity: 1;
+	margin-left: -6px;
+}
+
 .main-content {
 	margin-left: var(--sidebar-width);
 	padding: 20px;
 	transition: margin-left 0.3s ease-in-out;
 }
 
-.toggle-sidebar {
-	position: fixed;
-	top: 10px;
-	left: 10px;
-	background: none;
-	color: #fff;
-	border: none;
-	padding: 10px;
-	cursor: pointer;
-	z-index: 2;
-	transition: all 0.3s ease-in-out;
-}
-
-.toggle-sidebar span {
-	color: #0d6efd;
-	font-size: 24px;
-	font-weight: 500;
-	margin-left: 10px;
-	position: relative;
-	top: 10px;
-}
-
 .sidebar.small {
 	width: var(--sidebar-small-width);
 }
+
 
 .sidebar.small a span {
 	opacity: 0;
@@ -82,17 +142,19 @@
 	padding: 10px;
 	background-color: #f9f9f9;
 	border-radius: 5px;
+	height: 146px;
+	overflow-y: scroll;
 }
 
 #months-btn {
-	background-color: #535da1;
+	background-color: #8e44ad;
 	color: #fff;
 	border: #fff;
 	border-radius: 5px;
 }
 
 #weeks-btn {
-	background-color: #14B789;
+	background-color: #229954;
 	color: #fff;
 	border: #fff;
 	border-radius: 5px;
@@ -100,27 +162,20 @@
 }
 
 #days-btn {
-	background-color: #DE3163;
+	background-color: #2e86c1;
 	color: #fff;
 	border: #fff;
 	border-radius: 5px;
 	margin-left: 10px;
 }
 
-#repeat-btn {
-	background-color: #0297b1;
-	color: #fff;
-	border: #fff;
-	border-radius: 5px;
-	margin-left: 10px;
-}
 
 #months-options {
 	padding: 10px;
 	margin-top: 15px;
 	color: #ffffff;
 	border-radius: 5px;
-	background-color: #777da7;
+	background-color: #8e44ad;
 }
 
 #weeks-options {
@@ -128,7 +183,7 @@
 	margin-top: 15px;
 	color: #ffffff;
 	border-radius: 5px;
-	background-color: #70b6a2;
+	background-color: #229954;
 }
 
 #days-options {
@@ -136,48 +191,15 @@
 	margin-top: 15px;
 	color: #ffffff;
 	border-radius: 5px;
-	background-color: #c47e92;
+	background-color: #2e86c1;
 }
 
-#repeat-options-for-all {
-	padding: 10px;
-	margin-top: 15px;
-	color: #ffffff;
-	border-radius: 5px;
-	background-color: #48a8b9;
-}
-
-#months-options, #weeks-options, #days-options, #repeat-options-for-all {
-	margin-bottom: 10px;
-}
-
-#months-options label, #weeks-options label, #days-options label, #repeat-options-for-all label {
-	display: block;
-	margin-bottom: 5px;
+#repeat-options > div {
+    min-height: 100px; 
 }
 
 #months-options input[type="checkbox"], #weeks-options input[type="checkbox"], #days-options input[type="checkbox"] {
-	margin-right: 10px;
-}
-
-#repeat-options-for-all input[type="number"] {
-	width: 30%;
-	margin-right: 25px;
-	box-sizing: border-box;
-	border: 2px solid #ccc;
-	border-radius: 5px;
-	font-size: 16px;
-	color: #030303;
-}
-
-#repeat-options-for-all input[type="number"]:focus {
-	border-color: #6f7461;
-	outline: none;
-}
-
-#repeat-options-for-all input[type="number"]::placeholder {
-	color: #999;
-	font-style: italic;
+	margin-right: 5px;
 }
 
 .d-none input[type="checkbox"] {
@@ -201,10 +223,6 @@
 	border: 1px solid #ced4da;
 	color: black;
 	width: 216px;
-}
-
-.ed {
-	margin-left: -12px;
 }
 
 .btn-secondary.dropdown-toggle:focus {
@@ -244,10 +262,12 @@ input[type="submit"], input[type="reset"] {
 	margin-left: 50px;
 }
 
-select, .hidden input [type="text"], input[type="number"], input[type="time"] {
+.hidden {
+    display: none;
+}
+
+#hours, #minutes, #target-number-input, #target-description { 
 	margin-top: 8px;
-	border: 1px solid #ddd;
-	border-radius: 4px;
 }
 
 .form-select:focus {
@@ -260,15 +280,12 @@ select, .hidden input [type="text"], input[type="number"], input[type="time"] {
 	border-radius: 4px;
 }
 
-.hidden {
-	display: none;
+.disabled-section {
+	cursor: not-allowed;
+	opacity: 0.6; 
+}
+.enabled-section {
+	cursor: default;
+	opacity: 1;
 }
 
-#target-number-input {
-	width: 100%;
-	margin-top: 0px;
-	height: calc(1.5em + 0.75rem + 2px);
-	border: 1px solid #ced4da;
-	border-radius: 0.25rem;
-	color: #333;
-}
