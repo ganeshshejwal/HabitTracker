@@ -1,10 +1,8 @@
 package com.application.habittracker.entity;
 
 import java.sql.Date;
-import java.util.List;
 import jakarta.persistence.*;
 import lombok.*;
-
 
 @Entity
 @Table(name = "habit_log")
@@ -16,40 +14,33 @@ public class HabitLog {
     @Column(name = "user_id")
     private Integer userId;
 
-    @Column(name = "habit_id")
-    private Integer habitId;
-
     @Id
-    @Column(name = "log_date", nullable = false)
+    @Column(name = "log_date")
     private Date logDate;
 
-    @Column(name = "start_time", nullable = false)
+    @Column(name = "start_time")
     private String startTime;
 
-    @Column(name = "end_time", nullable = false)
+    @Column(name = "end_time")
     private String endTime;
 
-    @Column (name = "habit_target_in_times")
-    private String targetTime;
+    @Column(name = "habit_target_in_hours")
+    private String targetInHours;
 
-    @Column (name = "habit_target_in_measure")
-    private List<Integer> targetMeasure;
+    @Column(name = "habit_target_in_measure")
+    private String targetMeasure;
 
-    @Column (name = "habit_target_in_measure_description")
-    private List<Integer> targetMeasureDescription;
+    @Column(name = "habit_target_in_measure_description")
+    private String targetMeasureDescription;
 
     @Column(name = "no_of_times")
-    private int noOfTimes;
+    private Integer noOfTimes;
 
     @Column(name = "habit_description")
     private String habitDescription;
 
-    @Column(name = "is_checked", nullable = false)
+    @Column(name = "is_checked")
     private Boolean isChecked = false;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id", insertable = false, updatable = false)
-    private UserInformation userInformation;
 
     @ManyToOne
     @JoinColumn(name = "habit_id", insertable = false, updatable = false)

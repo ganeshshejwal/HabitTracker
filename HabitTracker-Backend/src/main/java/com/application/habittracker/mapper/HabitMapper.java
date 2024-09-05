@@ -1,0 +1,98 @@
+package com.application.habittracker.mapper;
+
+import java.sql.Date;
+
+import com.application.habittracker.entity.*;
+import com.application.habittracker.record.HabitData;
+
+public class HabitMapper {
+
+    public static HabitDetails toHabitDetails(HabitData habit) {
+        HabitDetails details = new HabitDetails();
+        details.setHabitName(habit.habitName());
+        return details;
+    }
+
+    public static HabitRepeat toHabitRepeat(HabitData habit) {
+        HabitRepeat repeat = new HabitRepeat();
+
+        repeat.setHabitStartDate(habit.startDate() != null ? Date.valueOf(habit.startDate()) : null);
+        repeat.setHabitEndDate(habit.endDate() != null ? Date.valueOf(habit.endDate()) : null);
+
+        repeat.setMonthly(!habit.repeatOptions().months().isEmpty());
+        setMonthlyFlags(habit, repeat);
+
+        repeat.setWeekly(!habit.repeatOptions().weeks().isEmpty());
+        setWeeklyFlags(habit, repeat);
+
+        repeat.setDaily(!habit.repeatOptions().days().isEmpty());
+        setDailyFlags(habit, repeat);
+
+        repeat.setNoOfTimesInMonth(parseOrDefault(habit.repeatOptions().customMonths(), 0));
+        repeat.setNoOfTimesInWeek(parseOrDefault(habit.repeatOptions().customWeeks(), 0));
+        repeat.setNoOfTimesInDay(parseOrDefault(habit.repeatOptions().customDays(), 0));
+
+        return repeat;
+    }
+
+    private static void setMonthlyFlags(HabitData habit, HabitRepeat repeat) {
+        repeat.setJanuary(habit.repeatOptions().months().contains("January"));
+        repeat.setFebruary(habit.repeatOptions().months().contains("February"));
+        repeat.setMarch(habit.repeatOptions().months().contains("March"));
+        repeat.setApril(habit.repeatOptions().months().contains("April"));
+        repeat.setMay(habit.repeatOptions().months().contains("May"));
+        repeat.setJune(habit.repeatOptions().months().contains("June"));
+        repeat.setJuly(habit.repeatOptions().months().contains("July"));
+        repeat.setAugust(habit.repeatOptions().months().contains("August"));
+        repeat.setSeptember(habit.repeatOptions().months().contains("September"));
+        repeat.setOctober(habit.repeatOptions().months().contains("October"));
+        repeat.setNovember(habit.repeatOptions().months().contains("November"));
+        repeat.setDecember(habit.repeatOptions().months().contains("December"));
+    }
+
+    private static void setWeeklyFlags(HabitData habit, HabitRepeat repeat) {
+        repeat.setWeek1(habit.repeatOptions().weeks().contains("Week 1"));
+        repeat.setWeek2(habit.repeatOptions().weeks().contains("Week 2"));
+        repeat.setWeek3(habit.repeatOptions().weeks().contains("Week 3"));
+        repeat.setWeek4(habit.repeatOptions().weeks().contains("Week 4"));
+    }
+
+    private static void setDailyFlags(HabitData habit, HabitRepeat repeat) {
+        repeat.setSunday(habit.repeatOptions().days().contains("Sunday"));
+        repeat.setMonday(habit.repeatOptions().days().contains("Monday"));
+        repeat.setTuesday(habit.repeatOptions().days().contains("Tuesday"));
+        repeat.setWednesday(habit.repeatOptions().days().contains("Wednesday"));
+        repeat.setThursday(habit.repeatOptions().days().contains("Thursday"));
+        repeat.setFriday(habit.repeatOptions().days().contains("Friday"));
+        repeat.setSaturday(habit.repeatOptions().days().contains("Saturday"));
+    }
+
+    public static HabitTarget toHabitTarget(HabitData habit) {
+        HabitTarget target = new HabitTarget();
+        target.setTargetTime(
+            habit.target().time() != null 
+                ? habit.target().time().hours() + ":" + habit.target().time().minutes()
+                : "00:00"
+        );
+        target.setTargetMeasure(parseOrDefault(habit.target().number().measure(), 0));
+        target.setTargetMeasureDescription(habit.target().number().description());
+        return target;
+    }
+
+    public static HabitTimesOfDay toHabitTimesOfDay(HabitData habit) {
+        HabitTimesOfDay timesOfDay = new HabitTimesOfDay();
+        timesOfDay.setMorning(habit.timeOfDay().contains("Morning"));
+        timesOfDay.setAfternoon(habit.timeOfDay().contains("Afternoon"));
+        timesOfDay.setEvening(habit.timeOfDay().contains("Evening"));
+        timesOfDay.setNight(habit.timeOfDay().contains("Night"));
+        return timesOfDay;
+    }
+
+    private static int parseOrDefault(String value, int defaultValue) {
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            return defaultValue;
+        }
+    }
+}

@@ -15,104 +15,100 @@ public class HabitRepeat {
     @Column(name = "habit_id")
     private Integer habitId;
 
-    @Column(name = "habit_start_date", nullable = false)
+    @Column(name = "habit_start_date")
     private Date habitStartDate;
 
-    @Column(name = "habit_end_date", nullable = false)
+    @Column(name = "habit_end_date")
     private Date habitEndDate;
 
-    @Column(name = "every_month", nullable = false)
-    private boolean everyMonth;
+    @Column(name = "monthly")
+    private Boolean monthly;
 
-    @Column(name = "january", nullable = false)
+    @Column(name = "january")
     private Boolean january = false;
 
-    @Column(name = "february", nullable = false)
+    @Column(name = "february")
     private Boolean february = false;
 
-    @Column(name = "march", nullable = false)
+    @Column(name = "march")
     private Boolean march = false;
 
-    @Column(name = "april", nullable = false)
+    @Column(name = "april")
     private Boolean april = false;
 
-    @Column(name = "may", nullable = false)
+    @Column(name = "may")
     private Boolean may = false;
 
-    @Column(name = "june", nullable = false)
+    @Column(name = "june")
     private Boolean june = false;
 
-    @Column(name = "july", nullable = false)
+    @Column(name = "july")
     private Boolean july = false;
 
-    @Column(name = "august", nullable = false)
+    @Column(name = "august")
     private Boolean august = false;
 
-    @Column(name = "september", nullable = false)
+    @Column(name = "september")
     private Boolean september = false;
 
-    @Column(name = "october", nullable = false)
+    @Column(name = "october")
     private Boolean october = false;
 
-    @Column(name = "november", nullable = false)
+    @Column(name = "november")
     private Boolean november = false;
 
-    @Column(name = "december", nullable = false)
+    @Column(name = "december")
     private Boolean december = false;
 
-    @Column(name = "every_week", nullable = false)
-    private Boolean everyWeek = false;
+    @Column(name = "weekly")
+    private Boolean weekly = false;
 
-    @Column(name = "week1", nullable = false)
+    @Column(name = "week1")
     private Boolean week1 = false;
 
-    @Column(name = "week2", nullable = false)
+    @Column(name = "week2")
     private Boolean week2 = false;
 
-    @Column(name = "week3", nullable = false)
+    @Column(name = "week3")
     private Boolean week3 = false;
 
-    @Column(name = "week4", nullable = false)
+    @Column(name = "week4")
     private Boolean week4 = false;
 
-    @Column(name = "everyday", nullable = false)
-    private Boolean everyday = false;
+    @Column(name = "daily")
+    private Boolean daily = false;
 
-    @Column(name = "sunday", nullable = false)
+    @Column(name = "sunday")
     private Boolean sunday = false;
 
-    @Column(name = "monday", nullable = false)
+    @Column(name = "monday")
     private Boolean monday = false;
 
-    @Column(name = "tuesday", nullable = false)
+    @Column(name = "tuesday")
     private Boolean tuesday = false;
 
-    @Column(name = "wednesday", nullable = false)
+    @Column(name = "wednesday")
     private Boolean wednesday = false;
 
-    @Column(name = "thursday", nullable = false)
+    @Column(name = "thursday")
     private Boolean thursday = false;
 
-    @Column(name = "friday", nullable = false)
+    @Column(name = "friday")
     private Boolean friday = false;
 
-    @Column(name = "saturday", nullable = false)
+    @Column(name = "saturday")
     private Boolean saturday = false;
 
-    @Column(name = "no_of_times_in_year", nullable = false)
-    private Integer noOfTimesInYear = 0;
-
-    @Column(name = "no_of_times_in_month", nullable = false)
+    @Column(name = "no_of_times_in_month")
     private Integer noOfTimesInMonth = 0;
 
-    @Column(name = "no_of_times_in_week", nullable = false)
+    @Column(name = "no_of_times_in_week")
     private Integer noOfTimesInWeek = 0;
 
-    @Column(name = "no_of_times_in_day", nullable = false)
+    @Column(name = "no_of_times_in_day")
     private Integer noOfTimesInDay = 0;
 
     @OneToOne
-    @MapsId
-    @JoinColumn(name = "habit_id")
+    @JoinColumn(name = "habit_id", insertable = false, updatable = false)
     private HabitDetails habitDetails;
 }

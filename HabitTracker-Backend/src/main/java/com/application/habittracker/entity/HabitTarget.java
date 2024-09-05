@@ -1,7 +1,5 @@
 package com.application.habittracker.entity;
 
-import java.util.List;
-
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,14 +19,13 @@ public class HabitTarget {
     private String targetTime;
 
     @Column (name = "habit_target_in_measure")
-    private List<Integer> targetMeasure;
+    private Integer targetMeasure;
 
     @Column (name = "habit_target_in_measure_description")
-    private List<Integer> targetMeasureDescription;
+    private String targetMeasureDescription;
 
     @OneToOne
-    @MapsId
-    @JoinColumn(name = "habit_id")
+    @JoinColumn(name = "habit_id", insertable = false, updatable = false)
     private HabitDetails habitDetails;
 
 }

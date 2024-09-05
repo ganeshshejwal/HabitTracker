@@ -2,7 +2,6 @@ package com.application.habittracker.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import java.util.List;
 
 @Entity
 @Table(name = "habit_time_of_day")
@@ -15,23 +14,20 @@ public class HabitTimesOfDay {
     @Column(name = "habit_id")
     private Integer habitId;
 
-    @Column(name = "morning", nullable = false)
+    @Column(name = "morning")
     private Boolean morning = false;
 
-    @Column(name = "afternoon", nullable = false)
+    @Column(name = "afternoon")
     private Boolean afternoon = false;
 
-    @Column(name = "evening", nullable = false)
+    @Column(name = "evening")
     private Boolean evening = false;
 
-    @Column(name = "night", nullable = false)
+    @Column(name = "night")
     private Boolean night = false;
 
     @OneToOne
-    @MapsId
-    @JoinColumn(name = "habit_id")
+    @JoinColumn(name = "habit_id", insertable = false, updatable = false)
     private HabitDetails habitDetails;
 
-    @OneToMany(mappedBy = "habitTimesOfDay", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<HabitDuration> habitDurations;
 }
