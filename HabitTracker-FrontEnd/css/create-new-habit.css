@@ -1,84 +1,6 @@
-:root {
-	--secondary-color: #ffffff;
-	--sidebar-width: 250px;
-	--sidebar-small-width: 60px;
-	--icon-size: 20px;
-	--icon-container-size: 60px;
+#label {
+	font-weight: 500;
 }
-
-.sidebar {
-	background-color: var(--secondary-color);
-	height: 100vh;
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: var(--sidebar-width);
-	transition: width 0.3s ease-in-out;
-	overflow-x: hidden;
-	box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-}
-
-.sidebar .img {
-	position: relative;
-	top: 50px;
-	margin-left: 10px;
-}
-
-.img span {
-	color: #0d6efd;
-	font-size: 28px;
-	font-weight: 600;
-	margin-left: 8px;
-	margin-top: 8px;
-}
-
-.sidebar ul {
-	list-style: none;
-	padding: 0;
-	position: relative;
-	top: 55px;
-	margin: 30px 0 0 0;
-}
-
-.sidebar a {
-	color: #000000c2;
-	text-decoration: none;
-	display: flex;
-	align-items: center;
-	transition: all 0.3s ease-in-out;
-	white-space: nowrap;
-}
-
-img {
-	width: 45px;
-	height: 45px;
-}
-.sidebar .icon-container {
-	width: var(--icon-container-size);
-	height: var(--icon-container-size);
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	flex-shrink: 0;
-	color: var(--primary-color);
-}
-
-.sidebar .icon-container:hover {
-	background-color: #0d6efd;
-	color: beige;
-}
-
-.sidebar a i {
-	font-size: var(--icon-size);
-	transition: all 0.3s ease-in-out;
-}
-
-.sidebar a span {
-	transition: opacity 0.3s ease-in-out;
-	opacity: 1;
-	margin-left: -6px;
-}
-
 .main-content {
 	margin-left: var(--sidebar-width);
 	padding: 20px;
@@ -98,11 +20,6 @@ img {
 
 .main-content.small-sidebar {
 	margin-left: var(--sidebar-small-width);
-}
-
-.form-control:focus {
-	border-color: #14B789;
-	box-shadow: 0 0 0 0.2rem rgba(20, 183, 137, 0.25);
 }
 
 .btn-group button {
@@ -225,22 +142,12 @@ img {
 	width: 216px;
 }
 
-.btn-secondary.dropdown-toggle:focus {
-	border-color: #14B789;
-	box-shadow: 0 0 0 0.2rem rgba(20, 183, 137, 0.25);
-}
-
 .custom-time-input {
 	background-color: #ffffff;
 	border: 1px solid #ced4da;
 	border-radius: 0.25rem;
 	font-size: 16px;
 	color: #495057;
-}
-
-.custom-time-input:focus {
-	border-color: #14B789;
-	box-shadow: 0 0 0 0.2rem rgba(20, 183, 137, 0.25);
 }
 
 .btn-with-time {
@@ -270,11 +177,6 @@ input[type="submit"], input[type="reset"] {
 	margin-top: 8px;
 }
 
-.form-select:focus {
-	border-color: #14B789;
-	box-shadow: 0 0 0 0.2rem rgba(20, 183, 137, 0.25);
-}
-
 .target-text {
 	border: 1px solid #ddd;
 	border-radius: 4px;
@@ -288,4 +190,8 @@ input[type="submit"], input[type="reset"] {
 	cursor: default;
 	opacity: 1;
 }
+
+
+
+
 
