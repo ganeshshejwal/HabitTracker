@@ -51,14 +51,19 @@
 	margin: 35px 0; 
 	height: 45px;
 	border-radius: 5px;
-	background-color: #0d6efd;
-	color: #ffffff;
+	color: #000000bb;
 	cursor: pointer;
 }
 
 .sidebar a:active {
     background-color: #0a58ca; 
     transform: scale(0.98);
+	color: #ffffff;
+}
+
+.sidebar a:hover {
+    background-color: #0d6efd;
+	color: #ffffff;
 }
 
 img {

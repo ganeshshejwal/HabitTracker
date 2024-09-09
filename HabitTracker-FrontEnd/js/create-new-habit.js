@@ -11,7 +11,7 @@ toggleSidebar.addEventListener("click", () => {
 
 //Radio List of Habits
 function toggleRadioList() {
-  var radioList = document.getElementById("radioList");
+  const radioList = document.getElementById("radioList");
   if (radioList.style.display === "none" || radioList.style.display === "") {
     radioList.style.display = "block";
   } else {
@@ -20,7 +20,7 @@ function toggleRadioList() {
 }
 
 document.body.addEventListener("click", function (event) {
-  var radioList = document.getElementById("radioList");
+  const radioList = document.getElementById("radioList");
   if (
     !radioList.contains(event.target) &&
     !event.target.closest('[onclick*="toggleRadioList"]')
@@ -31,14 +31,14 @@ document.body.addEventListener("click", function (event) {
 
 // Radio Value to Input
 function setInputValue(value) {
-  var inputField = document.getElementById("habitName");
+  const inputField = document.getElementById("habitName");
   inputField.value = value;
   toggleRadioList();
 }
 
 // Toggle For Validation HabitName
 document.getElementById("habitName").addEventListener("input", function () {
-  var icon = document.getElementById("habitIcon");
+  const icon = document.getElementById("habitIcon");
   if (this.value.trim() !== "") {
     icon.style.display = "inline";
     this.classList.remove("is-invalid");
@@ -46,7 +46,7 @@ document.getElementById("habitName").addEventListener("input", function () {
 });
 
 document.getElementById("habitName").addEventListener("click", function () {
-  var icon = document.getElementById("habitIcon");
+  const icon = document.getElementById("habitIcon");
   icon.style.display = "inline";
   this.classList.remove("is-invalid");
 });
@@ -139,7 +139,9 @@ daysBtn.addEventListener("click", () => {
 const monthlyCheckbox = document.getElementById("monthly-checkbox");
 const otherMonths = document.getElementById("other-months");
 const customInput = document.getElementById("custom-input");
-const otherMonthsCheckboxes = otherMonths.querySelectorAll( 'input[type="checkbox"]');
+const otherMonthsCheckboxes = otherMonths.querySelectorAll(
+  'input[type="checkbox"]'
+);
 
 function disableSection(section) {
   section.classList.add("disabled");
@@ -200,66 +202,64 @@ function setupRepeatSection(mainCheckboxId, otherOptionsId, customInputId) {
   const customInput = document.getElementById(customInputId);
 
   function disableRepeatSection(section) {
-      section.classList.add('disabled');
-      const inputs = section.querySelectorAll('input');
-      inputs.forEach(input => input.disabled = true);
+    section.classList.add("disabled");
+    const inputs = section.querySelectorAll("input");
+    inputs.forEach((input) => (input.disabled = true));
   }
 
   function enableRepeatSection(section) {
-      section.classList.remove('disabled');
-      const inputs = section.querySelectorAll('input');
-      inputs.forEach(input => input.disabled = false);
+    section.classList.remove("disabled");
+    const inputs = section.querySelectorAll("input");
+    inputs.forEach((input) => (input.disabled = false));
   }
 
   function handleMainRepeatChange() {
-      if (mainCheckbox.checked) {
-          disableRepeatSection(otherOptions);
-          disableRepeatSection(customInput.parentNode);
-      } else {
-          enableRepeatSection(otherOptions);
-          enableRepeatSection(customInput.parentNode);
-      }
+    if (mainCheckbox.checked) {
+      disableRepeatSection(otherOptions);
+      disableRepeatSection(customInput.parentNode);
+    } else {
+      enableRepeatSection(otherOptions);
+      enableRepeatSection(customInput.parentNode);
+    }
   }
 
   function handleOtherRepeatOptionsChange() {
-      const anyOtherOptionChecked = Array.from(otherOptions.querySelectorAll('input[type="checkbox"]')).some(cb => cb.checked);
-      if (anyOtherOptionChecked) {
-          disableRepeatSection(mainCheckbox.parentNode);
-          disableRepeatSection(customInput.parentNode);
-      } else {
-          enableRepeatSection(mainCheckbox.parentNode);
-          enableRepeatSection(customInput.parentNode);
-      }
+    const anyOtherOptionChecked = Array.from(
+      otherOptions.querySelectorAll('input[type="checkbox"]')
+    ).some((cb) => cb.checked);
+    if (anyOtherOptionChecked) {
+      disableRepeatSection(mainCheckbox.parentNode);
+      disableRepeatSection(customInput.parentNode);
+    } else {
+      enableRepeatSection(mainCheckbox.parentNode);
+      enableRepeatSection(customInput.parentNode);
+    }
   }
 
   function handleCustomRepeatChange() {
-      if (customInput.value !== '0') {
-          disableRepeatSection(mainCheckbox.parentNode);
-          disableRepeatSection(otherOptions);
-      } else {
-          enableRepeatSection(mainCheckbox.parentNode);
-          enableRepeatSection(otherOptions);
-      }
+    if (customInput.value !== "0") {
+      disableRepeatSection(mainCheckbox.parentNode);
+      disableRepeatSection(otherOptions);
+    } else {
+      enableRepeatSection(mainCheckbox.parentNode);
+      enableRepeatSection(otherOptions);
+    }
   }
 
-  mainCheckbox.addEventListener('change', handleMainRepeatChange);
-  otherOptions.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.addEventListener('change', handleOtherRepeatOptionsChange));
-  customInput.addEventListener('input', handleCustomRepeatChange);
+  mainCheckbox.addEventListener("change", handleMainRepeatChange);
+  otherOptions
+    .querySelectorAll('input[type="checkbox"]')
+    .forEach((cb) =>
+      cb.addEventListener("change", handleOtherRepeatOptionsChange)
+    );
+  customInput.addEventListener("input", handleCustomRepeatChange);
 }
 
 // Set up Weekly section
-setupRepeatSection(
-  'weekly-checkbox',
-  'other-weeks',
-  'custom-weekly-input'
-);
+setupRepeatSection("weekly-checkbox", "other-weeks", "custom-weekly-input");
 
 // Set up Daily section
-setupRepeatSection(
-  'daily-checkbox',
-  'other-days',
-  'custom-daily-input'
-);
+setupRepeatSection("daily-checkbox", "other-days", "custom-daily-input");
 
 // Select Target
 document.addEventListener("DOMContentLoaded", function () {
@@ -316,7 +316,7 @@ document
     event.preventDefault();
     let habitNameInput = document.getElementById("habitName");
     let icon = document.getElementById("habitIcon");
-    
+
     const habitData = {
       habitName: document.getElementById("habitName").value,
       startDate: document.getElementById("startDate").value,
@@ -340,14 +340,15 @@ document
         customMonths: document.querySelector(
           '#months-options input[type="number"]'
         ).value,
-        customWeeks: document.querySelector('#weeks-options input[type="number"]')
-          .value,
+        customWeeks: document.querySelector(
+          '#weeks-options input[type="number"]'
+        ).value,
         customDays: document.querySelector('#days-options input[type="number"]')
           .value,
       },
-      timeOfDay: Array.from(document.querySelectorAll(".btn-check:checked")).map(
-        (el) => el.nextElementSibling.textContent.trim()
-      ),
+      timeOfDay: Array.from(
+        document.querySelectorAll(".btn-check:checked")
+      ).map((el) => el.nextElementSibling.textContent.trim()),
       target: {
         time: {
           hours: document.getElementById("hours").value,
@@ -359,7 +360,20 @@ document
         },
       },
     };
-  
+
+    if (
+      habitData.habitName !== "" &&
+      habitData.startDate !== "" &&
+      habitData.endDate !== "" &&
+      habitData.repeatOptions.months.length === 0 &&
+      habitData.repeatOptions.weeks.length === 0 &&
+      habitData.repeatOptions.days.length === 0 &&
+      habitData.repeatOptions.customMonths === "0" &&
+      habitData.repeatOptions.customWeeks === "0" &&
+      habitData.repeatOptions.customDays === "0"
+    ) {
+      habitData.repeatOptions.days[0] = 'Daily';
+    }
 
     if (
       habitData.habitName !== "" &&
@@ -373,20 +387,44 @@ document
       habitData.repeatOptions.customDays === "0"
     ) {
       Swal.fire({
-        title: 'Error!',
-        text: 'Please Provide At Least One, Date OR Repeat Option',
-        icon: 'error',
-        confirmButtonText: 'OK',
-      })
+        title: "Error!",
+        text: "Please Provide At Least One, Date OR Repeat Option",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
     }
 
-    else if (habitNameInput.value.trim() === "") {
+    // Only Select End Date Not Start Date
+    else if (
+      habitData.habitName !== "" &&
+      habitData.startDate === "" &&
+      habitData.endDate !== ""
+    ) {
+      Swal.fire({
+        title: "Error!",
+        text: "Please Select Start Date",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+    }
+    // Only Select Start Date Not End Date
+    else if (
+      habitData.habitName !== "" &&
+      habitData.startDate !== "" &&
+      habitData.endDate === ""
+    ) {
+      Swal.fire({
+        title: "Error!",
+        text: "Please Select End Date",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+    } else if (habitNameInput.value.trim() === "") {
       icon.style.display = "none";
       habitNameInput.classList.add("is-invalid");
     } else {
-      saveHabit();
+      saveHabit(habitData);
       icon.style.display = "inline";
       habitNameInput.classList.remove("is-invalid");
     }
   });
-
