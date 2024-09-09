@@ -1,10 +1,11 @@
 package com.application.habittracker.repository;
 
-import com.application.habittracker.entity.HabitTarget;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface HabitTargetRepository extends JpaRepository<HabitTarget, Integer> {
-}
+import com.application.habittracker.entity.HabitLog;
 
+@Repository
+public interface HabitLogRepository extends JpaRepository<HabitLog, Integer> {
+    
+}

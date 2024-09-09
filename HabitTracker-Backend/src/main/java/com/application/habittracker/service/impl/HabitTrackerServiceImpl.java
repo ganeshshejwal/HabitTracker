@@ -5,17 +5,22 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.logging.log4j.util.PropertySource.Comparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.application.habittracker.entity.HabitDetails;
+import com.application.habittracker.entity.HabitLog;
 import com.application.habittracker.entity.HabitRepeat;
 import com.application.habittracker.entity.HabitTarget;
 import com.application.habittracker.entity.HabitTimesOfDay;
 import com.application.habittracker.mapper.HabitEntityMapper;
+import com.application.habittracker.mapper.HabitLogMapper;
 import com.application.habittracker.mapper.HabitMapper;
 import com.application.habittracker.record.HabitData;
+import com.application.habittracker.record.HabitLogRecord;
 import com.application.habittracker.repository.HabitDetailsRepository;
+import com.application.habittracker.repository.HabitLogRepository;
 import com.application.habittracker.repository.HabitRepeatRepository;
 import com.application.habittracker.repository.HabitTargetRepository;
 import com.application.habittracker.repository.HabitTimesOfDayRepository;
@@ -39,6 +44,9 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
 
     @Autowired
     private HabitTimesOfDayRepository habitTimesOfDayRepository;
+
+    @Autowired
+    private HabitLogRepository habitLogRepository;
 
     @Transactional
     public HabitData createHabit(HabitData habit) {
@@ -64,49 +72,92 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
         List<HabitDetails> habitDetailsList = habitDetailsRepository.findAll();
 
         return habitDetailsList.stream().map(habitDetails -> {
-            HabitRepeat habitRepeat = habitRepeatRepository.findById(habitDetails.getHabitId()).orElse(new HabitRepeat());
-            HabitTarget habitTarget = habitTargetRepository.findById(habitDetails.getHabitId()).orElse(new HabitTarget());
-            HabitTimesOfDay habitTimesOfDay = habitTimesOfDayRepository.findById(habitDetails.getHabitId()).orElse(new HabitTimesOfDay());
+            HabitRepeat habitRepeat = habitRepeatRepository.findById(habitDetails.getHabitId())
+                    .orElse(new HabitRepeat());
+            HabitTarget habitTarget = habitTargetRepository.findById(habitDetails.getHabitId())
+                    .orElse(new HabitTarget());
+            HabitTimesOfDay habitTimesOfDay = habitTimesOfDayRepository.findById(habitDetails.getHabitId())
+                    .orElse(new HabitTimesOfDay());
 
             return HabitEntityMapper.toHabit(habitDetails, habitRepeat, habitTarget, habitTimesOfDay);
         }).collect(Collectors.toList());
     }
 
-    
     public Optional<HabitData> getHabitById(Integer habitId) {
         return habitDetailsRepository.findById(habitId).map(habitDetails -> {
             HabitRepeat habitRepeat = habitRepeatRepository.findById(habitId).orElse(new HabitRepeat());
             HabitTarget habitTarget = habitTargetRepository.findById(habitId).orElse(new HabitTarget());
             HabitTimesOfDay habitTimesOfDay = habitTimesOfDayRepository.findById(habitId).orElse(new HabitTimesOfDay());
-    
+
             return HabitEntityMapper.toHabit(habitDetails, habitRepeat, habitTarget, habitTimesOfDay);
         });
     }
-    
 
     public List<HabitData> getHabitsByName(String habitName) {
         List<HabitDetails> habitDetailsList = habitDetailsRepository.findByHabitName(habitName);
 
         List<Integer> habitIds = habitDetailsList.stream()
-        .map(HabitDetails::getHabitId)  
-        .collect(Collectors.toList());
-        
+                .map(HabitDetails::getHabitId)
+                .collect(Collectors.toList());
+
         List<HabitData> habitDataList = new ArrayList<>();
-        for(int i = 0 ; i< habitIds.size() ; i++) {
+        for (int i = 0; i < habitIds.size(); i++) {
             HabitRepeat habitRepeat = habitRepeatRepository.findById(habitIds.get(i)).orElse(new HabitRepeat());
             HabitTarget habitTarget = habitTargetRepository.findById(habitIds.get(i)).orElse(new HabitTarget());
-            HabitTimesOfDay habitTimesOfDay = habitTimesOfDayRepository.findById(habitIds.get(i)).orElse(new HabitTimesOfDay());
+            HabitTimesOfDay habitTimesOfDay = habitTimesOfDayRepository.findById(habitIds.get(i))
+                    .orElse(new HabitTimesOfDay());
 
-            HabitData  habitData = HabitEntityMapper.toHabit(habitDetailsList.get(i), habitRepeat, habitTarget, habitTimesOfDay);
+            HabitData habitData = HabitEntityMapper.toHabit(habitDetailsList.get(i), habitRepeat, habitTarget,
+                    habitTimesOfDay);
             habitDataList.add(habitData);
         }
 
-        log.info("Habits Details : {}" , habitDataList);
+        log.info("Habits Details : {}", habitDataList);
         return habitDataList;
     }
 
-    public void deleteHabit(Integer habitId) {
-        habitDetailsRepository.softDeleteByName(habitId);  
+    public List<HabitData> getAllHabitsOfToday() {
+        List<Integer> habitDetailsList = habitRepeatRepository.findTodaysHabitIds();
+
+        List<HabitData> habitDataList2 = new ArrayList<>();
+
+        for (Integer i : habitDetailsList) {
+            HabitData habitData = getHabitById(i).get();
+            if (!habitData.isDeleted()) {
+                habitDataList2.add(habitData);
+            }
+        }
+        return habitDataList2;
     }
-     
+
+    public HabitData updateHabit(Integer habitId, HabitData habit) {
+        HabitDetails habitDetails = HabitMapper.toHabitDetails(habit);
+        habitDetails.setHabitId(habitId);
+        HabitRepeat habitRepeat = HabitMapper.toHabitRepeat(habit);
+        HabitTarget habitTarget = HabitMapper.toHabitTarget(habit);
+        HabitTimesOfDay habitTimesOfDay = HabitMapper.toHabitTimesOfDay(habit);
+
+        habitDetailsRepository.save(habitDetails);
+
+        habitRepeat.setHabitId(habitId);
+        habitTarget.setHabitId(habitId);
+        habitTimesOfDay.setHabitId(habitId);
+
+        habitRepeatRepository.save(habitRepeat);
+        habitTargetRepository.save(habitTarget);
+        habitTimesOfDayRepository.save(habitTimesOfDay);
+
+        Optional<HabitData> updatedHabitData = getHabitById(habitId);
+        return updatedHabitData.get();
+    }
+
+    public void deleteHabit(Integer habitId) {
+        habitDetailsRepository.softDeleteById(habitId);
+    }
+
+    public void saveHabitLog(HabitLogRecord habitLog) {
+        HabitLog createHabitLog = HabitLogMapper.toEntity(habitLog);
+        habitLogRepository.save(createHabitLog);
+    }
+
 }

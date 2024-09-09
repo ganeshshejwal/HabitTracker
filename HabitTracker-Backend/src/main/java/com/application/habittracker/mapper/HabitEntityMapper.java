@@ -2,15 +2,11 @@ package com.application.habittracker.mapper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.application.habittracker.entity.*;
 import com.application.habittracker.record.*;
 
 import com.application.habittracker.record.Number;
-import com.application.habittracker.repository.HabitRepeatRepository;
-import com.application.habittracker.repository.HabitTargetRepository;
-import com.application.habittracker.repository.HabitTimesOfDayRepository;
 
 public class HabitEntityMapper {
 

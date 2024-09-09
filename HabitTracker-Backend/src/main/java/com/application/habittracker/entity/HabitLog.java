@@ -11,10 +11,10 @@ import lombok.*;
 @AllArgsConstructor
 public class HabitLog {
 
-    @Column(name = "user_id")
-    private Integer userId;
-
     @Id
+    @Column(name = "habit_id")
+    private Integer habitId;
+
     @Column(name = "log_date")
     private Date logDate;
 
@@ -24,23 +24,14 @@ public class HabitLog {
     @Column(name = "end_time")
     private String endTime;
 
-    @Column(name = "habit_target_in_hours")
-    private String targetInHours;
+    @Column(name = "target_in_measure")
+    private Integer targetMeasure;
 
-    @Column(name = "habit_target_in_measure")
-    private String targetMeasure;
-
-    @Column(name = "habit_target_in_measure_description")
+    @Column(name = "description")
     private String targetMeasureDescription;
 
     @Column(name = "no_of_times")
-    private Integer noOfTimes;
-
-    @Column(name = "habit_description")
-    private String habitDescription;
-
-    @Column(name = "is_checked")
-    private Boolean isChecked = false;
+    private Integer noOfTimes = 0;
 
     @ManyToOne
     @JoinColumn(name = "habit_id", insertable = false, updatable = false)
