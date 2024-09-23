@@ -5,21 +5,17 @@ document.getElementById("date").textContent = date.toLocaleDateString(
   options
 );
 
-document.addEventListener("click", function (event) {
-  if (event.target.id === "add-button") {
-    const progressNumber = document.getElementById("progess-number").value;
-    const description = document.getElementById("description").value;
-    const startTime = document.getElementById("start-time").value;
-    const endTime = document.getElementById("end-time").value;
+const dateInput = document.getElementById("search-date");
 
-    const habitLog = {
-      habitId: event.target.getAttribute("data-habit-id"),
-      measure: progressNumber,
-      description: description,
-      beginTime: startTime,
-      endTime: endTime,
-    };
-
-    saveHabitLog(habitLog, event.target);
-  }
+dateInput.addEventListener("change", function () {
+  const selectedDate = dateInput.value;
+  const textDate = new Date(dateInput.value); // Convert the input value to a Date object
+  const options = { year: 'numeric', month: 'long', day: 'numeric' }; // Specify the format
+  const formattedDate = textDate.toLocaleDateString('en-US', options); // Format the date
+  
+  document.getElementById("date").textContent = formattedDate;
+  getTodaysHabit(selectedDate);
 });
+
+
+

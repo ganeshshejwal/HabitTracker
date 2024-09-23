@@ -1,14 +1,3 @@
-// Sidebar
-/*const toggleSidebar = document.getElementById("toggle-sidebar");
-const sidebar = document.getElementById("sidebar");
-const mainContent = document.getElementById("main-content");
-const sidebarIcon = document.getElementById("sidebar-icon");
-
-toggleSidebar.addEventListener("click", () => {
-  sidebar.classList.toggle("small");
-  mainContent.classList.toggle("small-sidebar");
-});*/
-
 //Radio List of Habits
 function toggleRadioList() {
   const radioList = document.getElementById("radioList");
@@ -51,259 +40,62 @@ document.getElementById("habitName").addEventListener("click", function () {
   this.classList.remove("is-invalid");
 });
 
-// Habit Input Validation
-function validateInput(input) {
-  input.value = input.value.replace(/[^a-zA-Z0-9]/g, "");
-}
-
-// Date Validation
-const today = new Date().toISOString().split("T")[0];
-document.getElementById("startDate").setAttribute("min", today);
-document.getElementById("endDate").setAttribute("min", today);
-
-// Start Date Input
-document.getElementById("startDate").addEventListener("click", function () {
-  this.classList.remove("is-invalid");
-});
-
-// Repeat Habit
-const monthsBtn = document.getElementById("months-btn");
-const weeksBtn = document.getElementById("weeks-btn");
-const daysBtn = document.getElementById("days-btn");
-
-const repeatOptions = document.getElementById("repeat-options");
-const monthsOptions = document.getElementById("months-options");
-const weeksOptions = document.getElementById("weeks-options");
-const daysOptions = document.getElementById("days-options");
-
-let currentOption = null;
-
-function toggleOptions(option) {
-  const optionElements = {
-    months: monthsOptions,
-    weeks: weeksOptions,
-    days: daysOptions,
-  };
-
-  if (currentOption === option) {
-    Object.values(optionElements).forEach((el) => el.classList.add("d-none"));
-    repeatOptions.classList.add("d-none");
-    currentOption = null;
-  } else {
-    repeatOptions.classList.remove("d-none");
-
-    Object.entries(optionElements).forEach(([key, el]) => {
-      el.classList.toggle("d-none", key !== option);
-    });
-    currentOption = option;
-  }
-}
-
-function hideAllOptions() {
-  const optionElements = {
-    months: monthsOptions,
-    weeks: weeksOptions,
-    days: daysOptions,
-  };
-
-  Object.values(optionElements).forEach((el) => el.classList.add("d-none"));
-  repeatOptions.classList.add("d-none");
-  currentOption = null;
-}
-
-document.body.addEventListener("click", function (event) {
-  if (
-    !repeatOptions.contains(event.target) &&
-    !event.target.closest('[onclick*="toggleOptions"]')
-  ) {
-    hideAllOptions();
-  }
-});
-
-monthsBtn.addEventListener("click", () => {
-  event.stopPropagation();
-  toggleOptions("months");
-});
-
-weeksBtn.addEventListener("click", () => {
-  event.stopPropagation();
-  toggleOptions("weeks");
-});
-
-daysBtn.addEventListener("click", () => {
-  event.stopPropagation();
-  toggleOptions("days");
-});
-
-// Montly Checkbox
-const monthlyCheckbox = document.getElementById("monthly-checkbox");
-const otherMonths = document.getElementById("other-months");
-const customInput = document.getElementById("custom-input");
-const otherMonthsCheckboxes = otherMonths.querySelectorAll(
-  'input[type="checkbox"]'
-);
-
-function disableSection(section) {
-  section.classList.add("disabled");
-  const inputs = section.querySelectorAll("input");
-  inputs.forEach((input) => (input.disabled = true));
-}
-
-function enableSection(section) {
-  section.classList.remove("disabled");
-  const inputs = section.querySelectorAll("input");
-  inputs.forEach((input) => (input.disabled = false));
-}
-
-function handleMonthlyChange() {
-  if (monthlyCheckbox.checked) {
-    disableSection(otherMonths);
-    disableSection(customInput.parentNode);
-  } else {
-    enableSection(otherMonths);
-    enableSection(customInput.parentNode);
-  }
-}
-
-function handleOtherMonthsChange() {
-  const anyOtherMonthChecked = Array.from(otherMonthsCheckboxes).some(
-    (cb) => cb.checked
-  );
-  if (anyOtherMonthChecked) {
-    disableSection(monthlyCheckbox.parentNode);
-    disableSection(customInput.parentNode);
-  } else {
-    enableSection(monthlyCheckbox.parentNode);
-    enableSection(customInput.parentNode);
-  }
-}
-
-function handleCustomChange() {
-  if (customInput.value !== "0") {
-    disableSection(monthlyCheckbox.parentNode);
-    disableSection(otherMonths);
-  } else {
-    enableSection(monthlyCheckbox.parentNode);
-    enableSection(otherMonths);
-  }
-}
-
-monthlyCheckbox.addEventListener("change", handleMonthlyChange);
-otherMonthsCheckboxes.forEach((cb) =>
-  cb.addEventListener("change", handleOtherMonthsChange)
-);
-customInput.addEventListener("input", handleCustomChange);
-
-//Weekly & Daily
-
-function setupRepeatSection(mainCheckboxId, otherOptionsId, customInputId) {
-  const mainCheckbox = document.getElementById(mainCheckboxId);
-  const otherOptions = document.getElementById(otherOptionsId);
-  const customInput = document.getElementById(customInputId);
-
-  function disableRepeatSection(section) {
-    section.classList.add("disabled");
-    const inputs = section.querySelectorAll("input");
-    inputs.forEach((input) => (input.disabled = true));
-  }
-
-  function enableRepeatSection(section) {
-    section.classList.remove("disabled");
-    const inputs = section.querySelectorAll("input");
-    inputs.forEach((input) => (input.disabled = false));
-  }
-
-  function handleMainRepeatChange() {
-    if (mainCheckbox.checked) {
-      disableRepeatSection(otherOptions);
-      disableRepeatSection(customInput.parentNode);
-    } else {
-      enableRepeatSection(otherOptions);
-      enableRepeatSection(customInput.parentNode);
-    }
-  }
-
-  function handleOtherRepeatOptionsChange() {
-    const anyOtherOptionChecked = Array.from(
-      otherOptions.querySelectorAll('input[type="checkbox"]')
-    ).some((cb) => cb.checked);
-    if (anyOtherOptionChecked) {
-      disableRepeatSection(mainCheckbox.parentNode);
-      disableRepeatSection(customInput.parentNode);
-    } else {
-      enableRepeatSection(mainCheckbox.parentNode);
-      enableRepeatSection(customInput.parentNode);
-    }
-  }
-
-  function handleCustomRepeatChange() {
-    if (customInput.value !== "0") {
-      disableRepeatSection(mainCheckbox.parentNode);
-      disableRepeatSection(otherOptions);
-    } else {
-      enableRepeatSection(mainCheckbox.parentNode);
-      enableRepeatSection(otherOptions);
-    }
-  }
-
-  mainCheckbox.addEventListener("change", handleMainRepeatChange);
-  otherOptions
-    .querySelectorAll('input[type="checkbox"]')
-    .forEach((cb) =>
-      cb.addEventListener("change", handleOtherRepeatOptionsChange)
-    );
-  customInput.addEventListener("input", handleCustomRepeatChange);
-}
-
-// Set up Weekly section
-setupRepeatSection("weekly-checkbox", "other-weeks", "custom-weekly-input");
-
-// Set up Daily section
-setupRepeatSection("daily-checkbox", "other-days", "custom-daily-input");
-
 // Select Target
 document.addEventListener("DOMContentLoaded", function () {
-  document
-    .querySelectorAll("#target-time input, #target-number input")
-    .forEach((input) => {
+  const targetTimeSpend = document.getElementById("target-time");
+  const targetTime = document.getElementById("time");
+  const targetNumber = document.getElementById("target-number");
+  const allInputs = document.querySelectorAll(
+    "#target-time input, #time input, #target-number input"
+  );
+
+  function disableAllInputs() {
+    allInputs.forEach((input) => {
       input.disabled = true;
+      input.value = ""; // Clear the input value
     });
+  }
+
+  function enableInputs(section) {
+    section.querySelectorAll("input").forEach((input) => {
+      input.disabled = false;
+    });
+  }
+
+  function updateSectionVisibility(selectedSection) {
+    [targetTimeSpend, targetTime, targetNumber].forEach((section) => {
+      if (section === selectedSection) {
+        section.classList.remove("disabled-section");
+        section.classList.add("enabled-section");
+      } else {
+        section.classList.remove("enabled-section");
+        section.classList.add("disabled-section");
+      }
+    });
+  }
+
+  disableAllInputs();
 
   document.querySelectorAll('input[name="target"]').forEach((radio) => {
     radio.addEventListener("change", function () {
-      document
-        .getElementById("target-time")
-        .classList.remove("enabled-section", "disabled-section");
-      document
-        .getElementById("target-number")
-        .classList.remove("enabled-section", "disabled-section");
+      disableAllInputs();
 
-      document
-        .querySelectorAll("#target-time input, #target-number input")
-        .forEach((input) => {
-          input.disabled = true;
-        });
+      let targetSection;
+      switch (this.id) {
+        case "target-time-radio":
+          targetSection = targetTimeSpend;
+          break;
+        case "time-input-radio":
+          targetSection = targetTime;
+          break;
+        case "target-number-radio":
+          targetSection = targetNumber;
+          break;
+      }
 
-      if (this.value === "time") {
-        document.getElementById("target-time").classList.add("enabled-section");
-        document
-          .getElementById("target-number")
-          .classList.add("disabled-section");
-
-        document.querySelectorAll("#target-time input").forEach((input) => {
-          input.disabled = false;
-        });
-      } else if (this.value === "number") {
-        document
-          .getElementById("target-time")
-          .classList.add("disabled-section");
-        document
-          .getElementById("target-number")
-          .classList.add("enabled-section");
-
-        document.querySelectorAll("#target-number input").forEach((input) => {
-          input.disabled = false;
-        });
+      if (targetSection) {
+        enableInputs(targetSection);
+        updateSectionVisibility(targetSection);
       }
     });
   });
@@ -350,16 +142,37 @@ document
         document.querySelectorAll(".btn-check:checked")
       ).map((el) => el.nextElementSibling.textContent.trim()),
       target: {
-        time: {
+        timeSpent: {
           hours: document.getElementById("hours").value,
           minutes: document.getElementById("minutes").value,
         },
+        selectTime: document.getElementById("time-input").value
+          ? formatTimeWithAMPM(document.getElementById("time-input").value)
+          : null,
         number: {
           measure: document.getElementById("target-number-input").value,
           description: document.getElementById("target-description").value,
         },
       },
     };
+    console.log(habitData);
+    // Check if timeSpent has valid values
+    const isTimeSpentSelected =
+      (habitData.target.timeSpent.hours &&
+        habitData.target.timeSpent.hours !== "00") ||
+      (habitData.target.timeSpent.minutes &&
+        habitData.target.timeSpent.minutes !== "00");
+
+    // Check if selectTime has a valid value
+    const isSelectTimeSelected =
+      habitData.target.selectTime !== null &&
+      habitData.target.selectTime !== "";
+
+    // Check if number has valid measure and description
+    const isNumberSelected =
+      habitData.target.number.measure !== "" &&
+      habitData.target.number.measure !== "0" &&
+      habitData.target.number.description !== "";
 
     if (
       habitData.habitName !== "" &&
@@ -372,7 +185,7 @@ document
       habitData.repeatOptions.customWeeks === "0" &&
       habitData.repeatOptions.customDays === "0"
     ) {
-      habitData.repeatOptions.days[0] = 'Daily';
+      habitData.repeatOptions.days[0] = "Daily";
     }
 
     if (
@@ -389,7 +202,7 @@ document
       Swal.fire({
         title: "Error!",
         text: "Please Provide At Least One, Date OR Repeat Option",
-        icon: "error",
+        icon: "warning",
         confirmButtonText: "OK",
       });
     }
@@ -403,7 +216,7 @@ document
       Swal.fire({
         title: "Error!",
         text: "Please Select Start Date",
-        icon: "error",
+        icon: "warning",
         confirmButtonText: "OK",
       });
     }
@@ -411,20 +224,57 @@ document
     else if (
       habitData.habitName !== "" &&
       habitData.startDate !== "" &&
-      habitData.endDate === ""
+      habitData.endDate !== "" && 
+      habitData.startDate > habitData.endDate
     ) {
       Swal.fire({
         title: "Error!",
-        text: "Please Select End Date",
-        icon: "error",
+        text: "End Date Not Less Than Start Date",
+        icon: "warning",
         confirmButtonText: "OK",
+      });
+    } else if (
+      habitData.habitName !== "" &&
+      !isTimeSpentSelected &&
+      !isSelectTimeSelected &&
+      !isNumberSelected
+    ) {
+      Swal.fire({
+        icon: "warning",
+        title: "No Target Selected",
+        text: "Please Select Target",
       });
     } else if (habitNameInput.value.trim() === "") {
       icon.style.display = "none";
       habitNameInput.classList.add("is-invalid");
     } else {
+      console.log(habitData);
       saveHabit(habitData);
       icon.style.display = "inline";
       habitNameInput.classList.remove("is-invalid");
     }
   });
+
+function formatTimeWithAMPM(time) {
+  if (!time || time.trim() === "") {
+    return null; // Return null for empty or whitespace-only input
+  }
+
+  const [hours, minutes] = time.split(":");
+  let hour = parseInt(hours, 10);
+  let mins = parseInt(minutes, 10);
+
+  if (isNaN(hour) || isNaN(mins)) {
+    return null; // Return null if either hours or minutes are not valid numbers
+  }
+
+  const ampm = hour >= 12 ? "PM" : "AM";
+
+  hour = hour % 12;
+  hour = hour ? hour : 12;
+
+  return `${hour.toString().padStart(2, "0")}:${minutes.padStart(
+    2,
+    "0"
+  )} ${ampm}`;
+}

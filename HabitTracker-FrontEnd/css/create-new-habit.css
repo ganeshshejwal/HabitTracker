@@ -177,6 +177,10 @@ input[type="submit"], input[type="reset"] {
 	margin-top: 8px;
 }
 
+#time-input {
+	margin-top: 34px;
+}
+
 .target-text {
 	border: 1px solid #ddd;
 	border-radius: 4px;

@@ -21,3 +21,18 @@
     width: inherit; 
     height: 80vh;
 }
+
+.incomplete-habits {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 2px solid red;
+    border-radius: 5px;
+    pointer-events: none;
+}
+
+.red-border {
+    border: 2px solid red !important;
+}

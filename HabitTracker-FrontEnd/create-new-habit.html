@@ -41,7 +41,7 @@
             </li>
 
             <li><a href="habit-stats.html">
-                    <div class="icon-container"><i class="fas fa-chart-line"></i></div><span>Statatics</span>
+                    <div class="icon-container"><i class="fas fa-chart-line"></i></div><span>Statistics</span>
                 </a>
             </li>
         </ul>
@@ -57,7 +57,7 @@
                             <div class="input-icon">
                                 <i class="fa fa-list" aria-hidden="true" onclick="toggleRadioList()" id="habitIcon"></i>
                                 <input type="text" class="form-control" id="habitName"
-                                    placeholder="Enter Habit Name   or   Select From List" oninput="validateInput(this)"
+                                    placeholder="Enter Habit Name   or   Select From List"
                                     spellcheck="false" autocomplete="off">
                                 <div class="invalid-feedback">
                                     Please Enter The Habit Name
@@ -286,8 +286,8 @@
 
                                     <div class="row">
                                         <div class="col-md-5">
-                                            <label id="custom-label">Custom<input type="number" value="0" min="0" max="10"
-                                                    class="form-control" id="custom-input"><i>Times in Month</i></label>
+                                            <label id="custom-label"><input type="number" value="0" min="0" max="10"
+                                                    class="form-control" id="custom-input" style="display: none;"><i></i></label>
                                         </div>
                                     </div>
 
@@ -315,8 +315,8 @@
 
                                     <div class="row">
                                         <div class="col-md-3">
-                                            <label id="custom-weekly-label">Custom<input type="number" value="0" min="0" max="10"
-                                                    class="form-control" id="custom-weekly-input"><i>Times in Week</i></label>
+                                            <label id="custom-weekly-label"><input type="number" value="0" min="0" max="10"
+                                                    class="form-control" id="custom-weekly-input" style="display: none;"><i></i></label>
                                         </div>
                                     </div>
                                 </div>
@@ -346,8 +346,8 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-3">
-                                            <label id="custom-daily-label">Custom<input type="number" value="0" min="0" max="10"
-                                                    class="form-control" id="custom-daily-input"><i>Times in Day</i></label>
+                                            <label id="custom-daily-label"><input type="number" value="0" min="0" max="10"
+                                                    class="form-control" id="custom-daily-input" style="display: none;"><i></i></label>
                                         </div>
                                     </div>
                                 </div>
@@ -392,7 +392,7 @@
                                 <input class="form-check-input" type="radio" name="target" id="target-time-radio"
                                     value="time">
                                 <label class="form-check-label" for="target-time-radio">
-                                    Select Time
+                                    Select Time Spend
                                 </label>
                             </div>
 
@@ -400,14 +400,12 @@
                                 <div class="row">
                                     <div class="col-md-5">
                                         <label for="hours">Hours</label>
-                                        <input type="number" class="form-control" id="hours" value="00" max="12"
-                                            min="00">
+                                        <input type="number" class="form-control" id="hours" value="00" max="12" min="00">
                                     </div>
 
                                     <div class="col-md-5">
                                         <label for="minutes">Minutes</label>
-                                        <input type="number" class="form-control" id="minutes" value="00" max="60"
-                                            min="00">
+                                        <input type="number" class="form-control" id="minutes" value="00" max="60" min="00">
                                     </div>
                                 </div>
 
@@ -415,6 +413,23 @@
 
                         </div>
 
+                        <div class="col-md-3">
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="target" id="time-input-radio" value="time">
+                              <label class="form-check-label" for="time-input-radio">
+                                Select Time
+                              </label>
+                            </div>
+                          
+                            <div id="time" class="mt-2 disabled-section">
+                              <div class="row">
+                                <div class="col-md-9">
+                                  <input type="time" class="form-control" id="time-input">
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                          
                         <div class="col-md-6">
 
                             <div class="form-check">
@@ -458,7 +473,7 @@
     <script src="js/backend-connection/backend-connection.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="js/create-new-habit.js"></script>
-    <script src="js/all-habits.js"></script>
+    <script src="js/util/utils.js"></script>
 
 </body>
 

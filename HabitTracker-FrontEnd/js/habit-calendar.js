@@ -1,3 +1,5 @@
+let countOfHabits = 0;
+
 function populateHabitCalendar() {
     const url = `http://localhost:8080/api/habit-tracker/habit-details`;
 
@@ -14,9 +16,8 @@ function populateHabitCalendar() {
             return response.json();
         })
         .then((habits) => {
-            console.log("Fetched habits:", habits);
-            const events = generateCalendarEvents(habits);
-            console.log("Generated events:", events);
+            const { events, habitCounts } = generateCalendarEvents(habits);
+            countOfHabits = habitCounts;
             initializeCalendar(events);
         })
         .catch((error) => console.error("Error:", error.message));
@@ -24,53 +25,103 @@ function populateHabitCalendar() {
 
 function generateCalendarEvents(habits) {
     const events = [];
+    const habitCounts = {};
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set time to midnight for comparison
+
+    const currentYear = today.getFullYear();
+    const yearStart = new Date(currentYear, 0, 1);
+    const yearEnd = new Date(currentYear, 11, 31);
 
     habits.forEach((habit) => {
         if (habit.isDeleted) return;
 
-        const startDate = habit.startDate ? new Date(habit.startDate) : new Date();
-        const endDate = habit.endDate ? new Date(habit.endDate) : new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0);
+        let startDate = new Date(habit.startDate);
+        let endDate = habit.endDate ? new Date(habit.endDate) : yearEnd;
 
+        // Adjust start date if it's before the current year
+        if (startDate < yearStart) {
+            startDate = new Date(yearStart);
+        }
+
+        // Iterate through dates
         let currentDate = new Date(startDate);
+        while (currentDate <= endDate && currentDate <= yearEnd) {
+            if (shouldAddEvent(currentDate, habit.repeatOptions, startDate, endDate)) {
+                const dateKey = currentDate.toISOString().slice(0, 10);
+                habitCounts[dateKey] = (habitCounts[dateKey] || 0) + 1;
 
-        while (currentDate <= endDate) {
-            if (shouldAddEvent(currentDate, habit.repeatOptions)) {
                 events.push({
                     start: new Date(currentDate),
                     title: habit.habitName,
-                    color: getRandomColor()
+                    color: getRandomColor(),
+                    id: habit.id,
+                    isPast: currentDate < today
                 });
             }
+
             currentDate.setDate(currentDate.getDate() + 1);
         }
     });
 
-    return events;
+    return { events, habitCounts };
 }
 
-function shouldAddEvent(date, repeatOptions) {
+function shouldAddEvent(date, repeatOptions, startDate, endDate) {
+    // Check if the date is within the start and end date range
+    if (date < startDate || (endDate && date > endDate)) {
+        return false;
+    }
+
     const dayOfWeek = date.getDay();
     const dayOfMonth = date.getDate();
+    const weekOfMonth = Math.ceil(dayOfMonth / 7);
+    const month = date.getMonth();
 
-    if (repeatOptions.days.includes("Daily")) return true;
-    if (repeatOptions.weeks.includes("Weekly") && dayOfWeek === 0) return true;
-    if (repeatOptions.months.length > 0 && dayOfMonth === date.getDaysInMonth()) return true;
+    // 1. Monthly
+    if (repeatOptions.months.includes("Monthly")) {
+        return true;
+    }
 
-    return repeatOptions.days.includes(getDayName(dayOfWeek));
+    // 2. Specific months
+    if (repeatOptions.months.length > 0 && !repeatOptions.months.includes("Monthly")) {
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        if (!repeatOptions.months.includes(monthNames[month])) {
+            return false;
+        }
+    }
+
+    // 3. Weekly
+    if (repeatOptions.weeks.includes("Weekly")) {
+        return true;
+    }
+
+    // 4. Specific weeks
+    if (repeatOptions.weeks.length > 0 && !repeatOptions.weeks.includes("Weekly")) {
+        if (!repeatOptions.weeks.includes(`Week ${weekOfMonth}`)) {
+            return false;
+        }
+    }
+
+    // 5. Daily
+    if (repeatOptions.days.includes("Daily")) {
+        return true;
+    }
+
+    // 6. Specific days
+    if (repeatOptions.days.length > 0 && !repeatOptions.days.includes("Daily")) {
+        const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        return repeatOptions.days.includes(dayNames[dayOfWeek]);
+    }
+
+    // 7 & 8 & 9. Start date, end date, and other options are already handled by the date range check at the beginning
+
+    return false;
 }
 
-function getDayName(dayIndex) {
-    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    return days[dayIndex];
-}
-
-function getRandomColor() {
-    const colors = ["#85c1e9", "#76d7c4", "#f9e79f", "#f5b7b1", "#d6dbdf"];
-    return colors[Math.floor(Math.random() * colors.length)];
-}
+// ... (rest of the code remains the same)
 
 function initializeCalendar(events) {
-    console.log("Initializing calendar with events:", events);
     mobiscroll.eventcalendar('#eventcalendar', {
         theme: 'ios',
         themeVariant: 'light',
@@ -81,15 +132,141 @@ function initializeCalendar(events) {
         view: {
             calendar: { type: 'month' }
         },
-        data: events
+        data: events,
+        renderEvent: function (data) {
+            let event = data.original;
+            let color = getRandomColor();
+            return '<div class="md-custom-event" style="color:' + color + '">' + event.title + '</div>';
+        }
     });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    console.log("DOM loaded, populating calendar");
-    populateHabitCalendar();
-});
+function getRandomColor() {
+    const colors = ["#e74c3c", "#9b59b6", "#2980b9", "#16a085", "#34495e"];
+    return colors[Math.floor(Math.random() * colors.length)];
+}
 
-Date.prototype.getDaysInMonth = function () {
-    return new Date(this.getFullYear(), this.getMonth() + 1, 0).getDate();
-};
+function getDayName(dayIndex) {
+    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    return days[dayIndex];
+}
+
+function getLastDayOfMonth(date) {
+    return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+}
+
+let habitLogsList;
+
+function fetchHabitLogs() {
+    const url = 'http://localhost:8080/api/habit-tracker/habit-details/habit-log';
+
+    fetch(url, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then((habitLogs) => {
+        habitLogsList = habitLogs;
+    })
+    .catch((error) => {
+        console.error('Error fetching habit logs:', error);
+    });
+}
+
+function getHabitCounts(habitCounts) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    for (const [date, count] of Object.entries(habitCounts)) {
+        for (const element of habitLogsList) {
+            if (element[0] === date) {
+                const habitDate = new Date(date);
+                if (element[1] < count) {
+                    showCustomAlert("Habit Pending", `You have incomplete habits for ${formatDate(date)}`);
+                    const formattedDate = formatDate(date);
+                    const targetElement = document.querySelector(`div[aria-label="${formattedDate}"]`);
+                    if (targetElement) {
+                        targetElement.classList.add('incomplete-habit-text');
+                    } else {
+                        console.log(`Element not found for date: ${formattedDate}`);
+                    }
+                }
+            }
+        }
+    }
+}
+
+function applyCustomStyles() {
+    const style = document.createElement('style');
+    style.textContent = `
+        .incomplete-habit-text {
+            background-color: red !important;
+            color: white !important;
+            border-color: red !important;
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+function showCustomAlert(title, message) {
+    const alertElement = document.createElement('div');
+    alertElement.className = 'alert alert-danger d-flex align-items-center';
+    alertElement.setAttribute('role', 'alert');
+
+    const svgElement = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svgElement.setAttribute('class', 'bi flex-shrink-0 me-2');
+    svgElement.setAttribute('width', '24');
+    svgElement.setAttribute('height', '24');
+    svgElement.setAttribute('role', 'img');
+    svgElement.setAttribute('aria-label', 'Danger:');
+
+    const useElement = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+    useElement.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#exclamation-triangle-fill');
+    svgElement.appendChild(useElement);
+
+    const textElement = document.createElement('div');
+    textElement.textContent = `${title}: ${message}`;
+
+    alertElement.appendChild(svgElement);
+    alertElement.appendChild(textElement);
+
+    let alertContainer = document.getElementById('custom-alert-container');
+    if (!alertContainer) {
+        alertContainer = document.createElement('div');
+        alertContainer.id = 'custom-alert-container';
+        alertContainer.style.position = 'fixed';
+        alertContainer.style.top = '10px';
+        alertContainer.style.right = '20px';
+        alertContainer.style.zIndex = '9999';
+        document.body.appendChild(alertContainer);
+    }
+
+    alertContainer.appendChild(alertElement);
+
+    setTimeout(() => {
+        alertElement.remove();
+        if (alertContainer.children.length === 0) {
+            alertContainer.remove();
+        }
+    }, 5000);
+}
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    populateHabitCalendar();
+    fetchHabitLogs();
+    setTimeout(() => {
+        getHabitCounts(countOfHabits);
+        applyCustomStyles();
+    }, 500);
+});

@@ -28,26 +28,27 @@ function getAllHabits() {
           const habitElement = document.createElement("div");
           habitElement.classList.add("container", "mb-4", "head");
           habitElement.style.backgroundColor = colors[index % colors.length];
-          let habitTarget = "-";
-          if (habit.target.number.measure == "0") {
-            habitTarget = `${habit.target.time.hours} : ${habit.target.time.minutes} Hrs`;
-          } else
-            habitTarget = `${habit.target.number.measure} ${habit.target.number.description}`;
+
+          let habitTarget = targetUtils(habit);
 
           habitElement.innerHTML = `
                 <div class="row">
                     <div class="col">${habit.habitName}</div>
                     <div class="col">${habit.startDate || "-"}</div>
                     <div class="col">${habit.endDate || "-"}</div>
-                    <div class="col">${getHabitRepeatText(habit.repeatOptions)}</div>
+                    <div class="col">${getHabitRepeatText(habit)}</div>
                     <div class="col">${habit.timeOfDay.join(", ") || "-"}</div>
                     <div class="col">${habitTarget}</div>
                     <div class="col">
                         <span class="action-icons">
-                            <i class="far fa-edit" data-habit-id="${habit.habitId}"></i>
+                            <i class="far fa-edit" data-habit-id="${
+                              habit.habitId
+                            }"></i>
                             &nbsp;
                             &nbsp;
-                            <i class="far fa-trash-alt" data-habit-id="${habit.habitId}"></i>
+                            <i class="far fa-trash-alt" data-habit-id="${
+                              habit.habitId
+                            }"></i>
                         </span>
                     </div>
                 </div>
@@ -59,15 +60,37 @@ function getAllHabits() {
     .catch((error) => console.error("Error:", error.message));
 }
 
-function getHabitRepeatText(repeatOptions) {
-  const { months, weeks, days } = repeatOptions;
+function getHabitRepeatText(habit) {
   let repeatText = "";
 
-  if (months.length) repeatText += " "+`${months.join(", ")}`;
-  if (weeks.length) repeatText += " "+`${weeks.join(", ")}`;
-  if (days.length) repeatText += " "+`${days.join(", ")}`;
+  let daysText = "Days : " + habit.repeatOptions.days.join(", ");
+  if (habit.repeatOptions.days.length > 0) {
+    repeatText = repeatText ? repeatText + " | " + daysText : daysText;
+  }
+  if (habit.repeatOptions.customDays > "0") {
+    daysText += ` (${habit.repeatOptions.customDays} times in Day)`;
+    repeatText = repeatText ? repeatText + " | " + daysText : daysText;
+  }
 
-  return repeatText || "No Repeat";
+  let weeksText = "Weeks: " + habit.repeatOptions.weeks.join(", ");
+  if (habit.repeatOptions.weeks.length > 0) {
+    repeatText = repeatText ? repeatText + " | " + weeksText : weeksText;
+  }
+  if (habit.repeatOptions.customWeeks > "0") {
+    weeksText += ` (${habit.repeatOptions.customWeeks} times in Week)`;
+    repeatText = repeatText ? repeatText + " | " + weeksText : weeksText;
+  }
+
+  let monthsText = "Months: " + habit.repeatOptions.months.join(", ");
+  if (habit.repeatOptions.months.length > 0) {
+    repeatText = repeatText ? repeatText + " | " + monthsText : monthsText;
+  }
+  if (habit.repeatOptions.customMonths > "0") {
+    monthsText += ` (${habit.repeatOptions.customMonths} times in Month)`;
+    repeatText = repeatText ? repeatText + " | " + monthsText : monthsText;
+  }
+
+  return repeatText || "-";
 }
 
 // Post
@@ -80,6 +103,31 @@ function saveHabit(habitData) {
     body: JSON.stringify(habitData),
   })
     .then((response) => {
+      {
+        const url = `http://localhost:8080/api/habit-tracker/habit-details/habit-data/${encodeURIComponent(
+          habitData.habitName
+        )}`;
+
+        fetch(url, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then((response) => {
+            if (response.status !== 302) {
+              return response.text().then((text) => {
+                throw new Error(
+                  `HTTP error! status: ${response.status}, body: ${text}`
+                );
+              });
+            }
+            return response.json();
+          })
+          .then((data) => {
+            console.log(data);
+          });
+      }
       if (response.ok) {
         Swal.fire({
           title: "Success!",
@@ -88,7 +136,7 @@ function saveHabit(habitData) {
           confirmButtonText: "OK",
         }).then((result) => {
           if (result.isConfirmed) {
-           window.location.reload();
+            window.location.reload();
           }
         });
       }
@@ -103,7 +151,6 @@ function saveHabit(habitData) {
       console.error("Error:", error);
     });
 }
-
 
 function fadeOutAndRemove(element) {
   element.classList.add("fade-out");
@@ -196,25 +243,26 @@ function getAllHabitsByName(habitName) {
           habitElement.classList.add("container", "mb-4", "head");
           habitElement.style.backgroundColor = colors[index % colors.length];
 
-          if (habit.target.number.measure == "0") {
-            habitTarget = `${habit.target.time.hours} : ${habit.target.time.minutes} Hrs`;
-          } else
-            habitTarget = `${habit.target.number.measure} ${habit.target.number.description}`;
+          let habitTarget = targetUtils(habit);
 
           habitElement.innerHTML = `
                 <div class="row">
                     <div class="col">${habit.habitName}</div>
                     <div class="col">${habit.startDate || "-"}</div>
                     <div class="col">${habit.endDate || "-"}</div>
-                    <div class="col">${getHabitRepeatText(habit.repeatOptions)}</div>
+                    <div class="col">${getHabitRepeatText(habit)}</div>
                     <div class="col">${habit.timeOfDay.join(", ") || "-"}</div>
                     <div class="col">${habitTarget}</div>
                     <div class="col">
                         <span class="action-icons">
-                            <i class="far fa-edit" data-habit-id="${habit.habitId}"></i>
+                            <i class="far fa-edit" data-habit-id="${
+                              habit.habitId
+                            }"></i>
                             &nbsp;
                             &nbsp;
-                            <i class="far fa-trash-alt" data-habit-id="${habit.habitId}"></i>
+                            <i class="far fa-trash-alt" data-habit-id="${
+                              habit.habitId
+                            }"></i>
                         </span>
                     </div>
                 </div>
@@ -253,50 +301,7 @@ function getHabitById(habitId) {
 }
 
 //Update Habit
-function updateHabit(habitId) {
-  const habitData = {
-    habitName: document.getElementById("habitName").value,
-    startDate: document.getElementById("startDate").value,
-    endDate: document.getElementById("endDate").value,
-    repeatOptions: {
-      months: Array.from(
-        document.querySelectorAll(
-          '#months-options input[type="checkbox"]:checked'
-        )
-      ).map((el) => el.value),
-      weeks: Array.from(
-        document.querySelectorAll(
-          '#weeks-options input[type="checkbox"]:checked'
-        )
-      ).map((el) => el.value),
-      days: Array.from(
-        document.querySelectorAll(
-          '#days-options input[type="checkbox"]:checked'
-        )
-      ).map((el) => el.value),
-      customMonths: document.querySelector(
-        '#months-options input[type="number"]'
-      ).value,
-      customWeeks: document.querySelector('#weeks-options input[type="number"]')
-        .value,
-      customDays: document.querySelector('#days-options input[type="number"]')
-        .value,
-    },
-    timeOfDay: Array.from(document.querySelectorAll(".btn-check:checked")).map(
-      (el) => el.nextElementSibling.textContent.trim()
-    ),
-    target: {
-      time: {
-        hours: document.getElementById("hours").value,
-        minutes: document.getElementById("minutes").value,
-      },
-      number: {
-        measure: document.getElementById("target-number-input").value,
-        description: document.getElementById("target-description").value,
-      },
-    },
-  };
-
+function updateHabit(habitId, habitData) {
   fetch(`http://localhost:8080/api/habit-tracker/habit-details/${habitId}`, {
     method: "PUT",
     headers: {
@@ -321,21 +326,18 @@ function updateHabit(habitId) {
           cancelPopUp();
         }
       });
+      const parent = document
+        .querySelector(`[data-habit-id="${habitId}"]`)
+        .closest(".row");
 
-      const parent = document.querySelector(`[data-habit-id="${habitId}"]`).closest(".row");
-      parent.children[0].textContent = habitData.habitName;
-      parent.children[1].textContent = habitData.startDate;
-      parent.children[2].textContent = habitData.endDate;
-      parent.children[3].textContent = habitData.repeatOptions.days.join(", ");
-      parent.children[4].textContent = habitData.timeOfDay.join(", ");
+      parent.children[0].textContent = data.habitName;
+      parent.children[1].textContent = data.startDate ? data.startDate : "-";
+      parent.children[2].textContent = data.endDate ? data.endDate : "-";
+      parent.children[3].textContent = getHabitRepeatText(data);
+      parent.children[4].textContent = data.timeOfDay.join(", ");
 
-      let hours = habitData.target.time.hours;
-      if(habitData.target.number.measure == '' || habitData.target.number.measure == '0') {
-        parent.children[5].textContent = `${hours} : ${habitData.target.time.minutes} Hrs`;
-      }
-      else {
-        parent.children[5].textContent = `${habitData.target.number.measure}  ${habitData.target.number.description}`;
-      }
+      let habitTarget = targetUtils(data);
+      parent.children[5].textContent = habitTarget;
     })
     .catch((error) => {
       console.error("Error:", error);
@@ -349,9 +351,9 @@ function fadeOutAndRemove(element) {
   });
 }
 
-// Get Todays Habit
-function getTodaysHabit() {
-  const url = `http://localhost:8080/api/habit-tracker/habit-details/habit-data-today`;
+let habitLogsSummaryList;
+function fetchHabitSummary() {
+  const url = "http://localhost:8080/api/habit-tracker/habit-details/summary";
 
   fetch(url, {
     method: "GET",
@@ -360,7 +362,31 @@ function getTodaysHabit() {
     },
   })
     .then((response) => {
-      if (response.status !=302) {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((habitLogs) => {
+      habitLogsSummaryList = habitLogs;
+    })
+    .catch((error) => {
+      console.error("Error fetching habit logs:", error);
+    });
+}
+
+// Get Todays Habit
+function getTodaysHabit(date) {
+  const url = `http://localhost:8080/api/habit-tracker/habit-details/habit-data-today/${date}`;
+
+  fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      if (response.status != 302) {
         return response.text().then((text) => {
           throw new Error(
             `HTTP error! status: ${response.status}, body: ${text}`
@@ -375,9 +401,11 @@ function getTodaysHabit() {
         console.error("Container element not found");
         return;
       }
-      container.innerHTML = ''; // Clear existing content
+      container.innerHTML = ""; // Clear existing content
 
       let rowElement;
+
+      const allTrackedHabitIds = getAllTrackedHabitIds();
 
       data.forEach((habit, index) => {
         if (!habit.isDeleted) {
@@ -391,15 +419,10 @@ function getTodaysHabit() {
           const habitElement = document.createElement("div");
           habitElement.classList.add("col-md-6", "card");
 
-          let habitTarget = "-";
-          if (habit.target && habit.target.number && habit.target.number.measure == '0') {
-            habitTarget = `${habit.target.time.hours} : ${habit.target.time.minutes} Hrs`;
-          } else if (habit.target && habit.target.number) {
-            habitTarget = `${habit.target.number.measure} ${habit.target.number.description}`;
-          }
+          let habitTarget = targetUtils(habit);
 
           let timeOfDay = "DayOrNight";
-          let timeOfDayText = "";
+          let timeOfDayText = "AnyTime";
           if (habit.timeOfDay && habit.timeOfDay.length > 0) {
             timeOfDay = habit.timeOfDay[0].toLowerCase();
             timeOfDayText = habit.timeOfDay[0];
@@ -407,7 +430,7 @@ function getTodaysHabit() {
 
           habitElement.innerHTML = `
             <div class="row">
-              <div class="col-md-9" id="habitName">${habit.habitName || 'Unnamed Habit'}</div>
+              <div class="col-md-9" id="habitName">${habit.habitName}</div>
               <div class="col" style="display: flex; flex-direction: column; align-items: center; margin-right:-25px">
                 <img src="images/time-of-day/${timeOfDay}.png" alt="" id="time_of_days">
                 <span id="time_of_day">${timeOfDayText}</span>
@@ -421,46 +444,153 @@ function getTodaysHabit() {
               </div>
             </div>
 
-            <div class="row mb-2">
-              <div class="mb-2" id="target-complete-name">Progress</div>
-              <div class="row mb-2">
-                <div class="col-2">
-                  <div class="d-flex align-items-center">
-                    <input type="text" class="form-control" id="progess-number" value="00" max="500" min="00">
-                  </div>
-                </div>
-                <div class="col">
-                  <input type="text" class="form-control" placeholder="Enter The Description" id="description">
-                </div>
-              </div>
+            <!-- Display the target section based on habit.target -->
+            ${
+              habit.target.timeSpent.hours !== "00" ||
+              habit.target.timeSpent.minutes !== "00"
+                ? `
+          <!-- Time Spent Section -->
+          <div class="row mb-5">
+            <div class="col-md-4">
+              <label for="hours-${habit.habitId}">Hours</label>
+              <input type="number" class="form-control" id="hours-${habit.habitId}" value="${habit.target.timeSpent.hours}"
+                max="12" min="00">
             </div>
-
-            <div class="row mb-4">
-              <div class="col-md-5">
-                <div class="d-flex">
-                  <span id="begin">Begin</span>
-                  <input type="time" id="start-time" class="form-control ms-2" value="00:00">
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="d-flex">
-                  <span id="finish">Finish</span>
-                  <input type="time" id="end-time" class="form-control ms-2" value="00:00">
-                </div>
-              </div>
+            <div class="col-md-4">
+              <label for="minutes-${habit.habitId}">Minutes</label>
+              <input type="number" class="form-control" id="minutes-${habit.habitId}" value="${habit.target.timeSpent.minutes}"
+                max="60" min="00">
             </div>
-
-            <div>
-              <button type="button" class="btn btn-primary" id="add-button" data-habit-id="${habit.habitId}">Add</button>
+          </div>
+          `
+                : ``
+            }
+          
+          ${
+            habit.target.selectTime
+              ? `
+          <!-- Select Time Section -->
+          <div class="row mb-5">
+            <div class="col-md-6">
+              <label for="time-input-${habit.habitId}">Select Time</label>
+              <input type="time" class="form-control" id="time-input-${habit.habitId}" value="${habit.target.selectTime}">
+            </div>
+          </div>
+          `
+              : ``
+          }
+          
+          ${
+            habit.target.number.measure !== "0" &&
+            habit.target.number.description !== ""
+              ? `
+          <!-- Others (Measure + Description) Section -->
+          <div class="row mb-5">
+            <div class="col-md-3">
+              <label for="target-number-input-${habit.habitId}">Measure</label>
+              <input type="number" id="target-number-input-${habit.habitId}" value="${habit.target.number.measure}" min="0"
+                class="form-control">
+            </div>
+            <div class="col-md-8">
+              <label for="target-description-${habit.habitId}">Description</label>
+              <input type="text" id="target-description-${habit.habitId}" value="${habit.target.number.description}"
+                class="form-control" maxlength="50">
+            </div>
+          </div>
+          `
+              : ``
+          }        
+   
+            <div class="mb-3">
+              <button type="button" class="btn btn-primary" id="add-button-${
+                habit.habitId
+              }" data-habit-id="${habit.habitId}">Add</button>
             </div>
           `;
 
           rowElement.appendChild(habitElement);
+
+          // Add event listener for the "Add" button
+          const addButton = habitElement.querySelector(
+            `#add-button-${habit.habitId}`
+          );
+
+          addButton.addEventListener("click", function () {
+            let timeSpentHours =
+              document.getElementById(`hours-${habit.habitId}`)?.value || "00";
+            let timeSpentMinutes =
+              document.getElementById(`minutes-${habit.habitId}`)?.value || "00";
+            let selectTime =
+              document.getElementById(`time-input-${habit.habitId}`)?.value || null;
+            let measure =
+              document.getElementById(`target-number-input-${habit.habitId}`)
+                ?.value || "0";
+            let description =
+              document.getElementById(`target-description-${habit.habitId}`)?.value ||
+              "";
+
+              let target = "";
+              if (timeSpentHours && timeSpentHours !== "00" || timeSpentMinutes && timeSpentMinutes !== "00") {
+                target = `${timeSpentHours}:${timeSpentMinutes} Hrs`;
+              }
+              
+              else if (selectTime) {
+                target += `${formatTimeWithAMPM(selectTime)}`;
+              }
+  
+              else if (measure && measure !== 0 || description && description.trim() !== "") {
+                target += `${measure || 0} ${description || ""}`;
+              }
+              
+            const habitLog = {
+              habitId: habit.habitId,
+              logDate : date,
+              targetName : habitTarget,
+              targetMeasure : target,
+            };
+
+            saveHabitLog(habitLog, this);
+          });
         }
       });
-
     })
     .catch((error) => console.error("Error:", error.message));
+}
+
+function formatTimeWithAMPM(time) {
+  if (!time || time.trim() === "") {
+    return "00:00 AM"; // Return "00:00 AM" when no time is selected
+  }
+
+  const [hours, minutes] = time.split(":");
+  let hour = parseInt(hours, 10);
+  let mins = parseInt(minutes, 10);
+
+  if (isNaN(hour)) {
+    hour = 0; // Default to 0 if hours is invalid
+  }
+
+  if (isNaN(mins)) {
+    mins = 0; // Default to 0 if minutes is invalid
+  }
+
+  const ampm = hour >= 12 ? "PM" : "AM";
+  hour = hour % 12;
+  hour = hour ? hour : 12; // Convert hour to 12-hour format
+
+  return `${hour.toString().padStart(2, "0")}:${mins
+    .toString()
+    .padStart(2, "0")} ${ampm}`;
+}
+
+function getAllTrackedHabitIds() {
+  console.log(habitLogsSummaryList);
+  if (!habitLogsSummaryList) return [];
+  const allHabitIds = new Set();
+  habitLogsSummaryList.forEach((summary) => {
+    summary[1].forEach((id) => allHabitIds.add(id));
+  });
+  return Array.from(allHabitIds);
 }
 
 // Save Habit Log
@@ -475,8 +605,8 @@ function saveHabitLog(habitLog, target) {
   })
     .then((response) => {
       if (response.ok) {
-        const card = target.closest('.card');
-        card.style.border = '2px solid #229954';
+        const card = target.closest(".card");
+        card.style.border = "2px solid #229954";
       }
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -493,5 +623,37 @@ function saveHabitLog(habitLog, target) {
 // On DOM LOAD
 document.addEventListener("DOMContentLoaded", () => {
   getAllHabits();
-  getTodaysHabit();
+  fetchHabitSummary();
+  getTodaysHabit(new Date().toISOString().split("T")[0]);
 });
+
+function formatTimeWithAMPM(time) {
+  const [hours, minutes] = time.split(":");
+  let hour = parseInt(hours, 10);
+  const ampm = hour >= 12 ? "PM" : "AM";
+
+  hour = hour % 12;
+  hour = hour ? hour : 12;
+
+  return `${hour.toString().padStart(2, "0")}:${minutes} ${ampm}`;
+}
+
+function targetUtils(habit) {
+  let habitTarget;
+  if (
+    habit.target.timeSpent.hours != "00" ||
+    habit.target.timeSpent.minutes != "00"
+  ) {
+    habitTarget = `${habit.target.timeSpent.hours}:${habit.target.timeSpent.minutes} Hrs`;
+  } else if (habit.target.selectTime != null) {
+    habitTarget = habit.target.selectTime;
+  } else if (
+    habit.target.number.measure != "0" &&
+    habit.target.number.description !== ""
+  ) {
+    habitTarget = `${habit.target.number.measure} ${habit.target.number.description}`;
+  } else {
+    habitTarget = "-";
+  }
+  return habitTarget;
+}
