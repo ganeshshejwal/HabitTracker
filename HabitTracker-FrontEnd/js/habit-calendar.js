@@ -78,6 +78,8 @@ function shouldAddEvent(date, repeatOptions, startDate, endDate) {
     const weekOfMonth = Math.ceil(dayOfMonth / 7);
     const month = date.getMonth();
 
+    console.log(repeatOptions);
+
     // 1. Monthly
     if (repeatOptions.months.includes("Monthly")) {
         return true;
@@ -85,10 +87,8 @@ function shouldAddEvent(date, repeatOptions, startDate, endDate) {
 
     // 2. Specific months
     if (repeatOptions.months.length > 0 && !repeatOptions.months.includes("Monthly")) {
-        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        if (!repeatOptions.months.includes(monthNames[month])) {
-            return false;
-        }
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        return repeatOptions.months.includes(monthNames[month]);
     }
 
     // 3. Weekly
@@ -98,9 +98,7 @@ function shouldAddEvent(date, repeatOptions, startDate, endDate) {
 
     // 4. Specific weeks
     if (repeatOptions.weeks.length > 0 && !repeatOptions.weeks.includes("Weekly")) {
-        if (!repeatOptions.weeks.includes(`Week ${weekOfMonth}`)) {
-            return false;
-        }
+        return repeatOptions.weeks.includes(`${weekOfMonth}`);
     }
 
     // 5. Daily
@@ -184,6 +182,7 @@ function getHabitCounts(habitCounts) {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     for (const [date, count] of Object.entries(habitCounts)) {
+        console.log(habitLogsList);
         for (const element of habitLogsList) {
             if (element[0] === date) {
                 const habitDate = new Date(date);
@@ -254,7 +253,7 @@ function showCustomAlert(title, message) {
         if (alertContainer.children.length === 0) {
             alertContainer.remove();
         }
-    }, 5000);
+    }, 15000);
 }
 
 function formatDate(dateString) {

@@ -155,7 +155,6 @@ document
         },
       },
     };
-    console.log(habitData);
     // Check if timeSpent has valid values
     const isTimeSpentSelected =
       (habitData.target.timeSpent.hours &&
@@ -178,6 +177,19 @@ document
       habitData.habitName !== "" &&
       habitData.startDate !== "" &&
       habitData.endDate !== "" &&
+      habitData.repeatOptions.months.length === 0 &&
+      habitData.repeatOptions.weeks.length === 0 &&
+      habitData.repeatOptions.days.length === 0 &&
+      habitData.repeatOptions.customMonths === "0" &&
+      habitData.repeatOptions.customWeeks === "0" &&
+      habitData.repeatOptions.customDays === "0"
+    ) {
+      habitData.repeatOptions.days[0] = "Daily";
+    }
+    if (
+      habitData.habitName !== "" &&
+      habitData.startDate !== "" &&
+      habitData.endDate === "" &&
       habitData.repeatOptions.months.length === 0 &&
       habitData.repeatOptions.weeks.length === 0 &&
       habitData.repeatOptions.days.length === 0 &&
