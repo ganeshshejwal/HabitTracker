@@ -13,9 +13,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.*;
 import com.application.habittracker.record.HabitData;
+import com.application.habittracker.record.HabitDisplayReport;
 import com.application.habittracker.record.HabitLogRecord;
+import com.application.habittracker.record.HabitReport;
 import com.application.habittracker.service.HabitTrackerService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -42,31 +45,31 @@ public class HabitTrackerController {
     }
 
     @GetMapping("/{habitId}")
-    public ResponseEntity<HabitData> getHabitById(@PathVariable Integer habitId) {    
+    public ResponseEntity<HabitData> getHabitById(@PathVariable("habitId") Integer habitId) {    
         Optional<HabitData> habitData = habitTrackerService.getHabitById(habitId);
         return ResponseEntity.status(HttpStatus.FOUND).body(habitData.get());
     }
    
     @GetMapping("/habit-data/{habitName}")
-    public ResponseEntity<List<HabitData>> getHabitsByName(@PathVariable String habitName) {
+    public ResponseEntity<List<HabitData>> getHabitsByName(@PathVariable("habitName") String habitName) {
         List<HabitData> habitDataList = habitTrackerService.getHabitsByName(habitName);
         return ResponseEntity.status(HttpStatus.FOUND).body(habitDataList);
     }
 
-    @GetMapping("/habit-data-today")
-    public ResponseEntity<List<HabitData>> getAllHabitsOfToday() {
-        List<HabitData> habits = habitTrackerService.getAllHabitsOfToday();
+    @GetMapping("/habit-data-today/{date}")
+    public ResponseEntity<List<HabitData>> getAllHabitsOfToday(@PathVariable("date") LocalDate date) {
+        List<HabitData> habits = habitTrackerService.getAllHabitsOfToday(date);
         return ResponseEntity.status(HttpStatus.FOUND).body(habits);
     }
 
     @PutMapping("/{habitId}")
-    public ResponseEntity<HabitData> updateHabit(@PathVariable Integer habitId, @RequestBody HabitData habit) {    
+    public ResponseEntity<HabitData> updateHabit(@PathVariable("habitId") Integer habitId, @RequestBody HabitData habit) {    
         HabitData habitData = habitTrackerService.updateHabit(habitId, habit);
         return ResponseEntity.status(HttpStatus.OK).body(habitData);
     }
     
     @DeleteMapping("/{habitId}")
-    public ResponseEntity<String> deleteHabit(@PathVariable Integer habitId) {
+    public ResponseEntity<String> deleteHabit(@PathVariable("habitId") Integer habitId) {
         habitTrackerService.deleteHabit(habitId);
         return ResponseEntity.status(HttpStatus.OK).body("HabitData Deleted Successfully");
     }
@@ -76,4 +79,23 @@ public class HabitTrackerController {
         habitTrackerService.saveHabitLog(habitLog);
         return ResponseEntity.status(HttpStatus.OK).body("HabitLog Saved Successfully");
     }
+
+    @GetMapping("/habit-log")
+    public ResponseEntity<List<Object[]>> habitLogByDate() {
+        List<Object[]> habitLogsList = habitTrackerService.habitLogByDate();
+        return ResponseEntity.status(HttpStatus.OK).body(habitLogsList);
+    }
+
+    @GetMapping("/summary")
+    public ResponseEntity<List<Object[]>> getHabitLogsSummary() {
+        List<Object[]> summary = habitTrackerService.getHabitLogsSummary();
+        return ResponseEntity.status(HttpStatus.OK).body(summary);
+    }
+
+    @PostMapping("/statistics")
+    public ResponseEntity<List<List<HabitDisplayReport>>> getHabitReport(@RequestBody HabitReport habitReport) {
+        List<List<HabitDisplayReport>> statistics = habitTrackerService.getHabitReport(habitReport);
+        return ResponseEntity.ok(statistics);
+    }
+    
 }

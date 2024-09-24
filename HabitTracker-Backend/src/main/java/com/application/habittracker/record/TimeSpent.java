@@ -1,6 +1,6 @@
 package com.application.habittracker.record;
 
-public record Time(
+public record TimeSpent(
     String hours,
     String minutes
 ) {}

@@ -11,12 +11,10 @@ public class HabitLogMapper {
     public static HabitLog toEntity(HabitLogRecord habitLogRecord) {
         HabitLog habitLog = new HabitLog();
 
-        habitLog.setHabitId(habitLogRecord.habitId());
-        habitLog.setLogDate(Date.valueOf(LocalDate.now())); 
-        habitLog.setStartTime(habitLogRecord.beginTime()); 
-        habitLog.setEndTime(habitLogRecord.endTime());     
-        habitLog.setTargetMeasure(habitLogRecord.measure()); 
-        habitLog.setTargetMeasureDescription(habitLogRecord.description()); 
+       habitLog.setHabitId(habitLogRecord.habitId());
+       habitLog.setLogDate(Date.valueOf(habitLogRecord.logDate()));
+       habitLog.setTargetName(habitLogRecord.targetName());
+       habitLog.setTargetMeasure(habitLogRecord.targetMeasure());
 
         return habitLog;
     }

@@ -5,6 +5,9 @@ import java.sql.Date;
 import com.application.habittracker.entity.*;
 import com.application.habittracker.record.HabitData;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class HabitMapper {
 
     public static HabitDetails toHabitDetails(HabitData habit) {
@@ -19,23 +22,20 @@ public class HabitMapper {
         repeat.setHabitStartDate(habit.startDate() != null ? Date.valueOf(habit.startDate()) : null);
         repeat.setHabitEndDate(habit.endDate() != null ? Date.valueOf(habit.endDate()) : null);
 
-        repeat.setMonthly(!habit.repeatOptions().months().isEmpty());
         setMonthlyFlags(habit, repeat);
-
-        repeat.setWeekly(!habit.repeatOptions().weeks().isEmpty());
         setWeeklyFlags(habit, repeat);
-
-        repeat.setDaily(!habit.repeatOptions().days().isEmpty());
         setDailyFlags(habit, repeat);
 
-        repeat.setNoOfTimesInMonth(parseOrDefault(habit.repeatOptions().customMonths(), 0));
-        repeat.setNoOfTimesInWeek(parseOrDefault(habit.repeatOptions().customWeeks(), 0));
-        repeat.setNoOfTimesInDay(parseOrDefault(habit.repeatOptions().customDays(), 0));
+        log.info("Repeat Options = {}", habit.repeatOptions());
+        repeat.setNoOfTimesInMonth(parseOrDefault(habit.repeatOptions().customMonths()));
+        repeat.setNoOfTimesInWeek(parseOrDefault(habit.repeatOptions().customWeeks()));
+        repeat.setNoOfTimesInDay(parseOrDefault(habit.repeatOptions().customDays()));
 
         return repeat;
     }
 
     private static void setMonthlyFlags(HabitData habit, HabitRepeat repeat) {
+        repeat.setMonthly(habit.repeatOptions().months().contains("Monthly"));
         repeat.setJanuary(habit.repeatOptions().months().contains("January"));
         repeat.setFebruary(habit.repeatOptions().months().contains("February"));
         repeat.setMarch(habit.repeatOptions().months().contains("March"));
@@ -51,13 +51,19 @@ public class HabitMapper {
     }
 
     private static void setWeeklyFlags(HabitData habit, HabitRepeat repeat) {
+        repeat.setWeekly(habit.repeatOptions().weeks().contains("Weekly"));
         repeat.setWeek1(habit.repeatOptions().weeks().contains("Week 1"));
         repeat.setWeek2(habit.repeatOptions().weeks().contains("Week 2"));
         repeat.setWeek3(habit.repeatOptions().weeks().contains("Week 3"));
         repeat.setWeek4(habit.repeatOptions().weeks().contains("Week 4"));
+        repeat.setWeek1(habit.repeatOptions().weeks().contains("1"));
+        repeat.setWeek2(habit.repeatOptions().weeks().contains("2"));
+        repeat.setWeek3(habit.repeatOptions().weeks().contains("3"));
+        repeat.setWeek4(habit.repeatOptions().weeks().contains("4"));
     }
 
     private static void setDailyFlags(HabitData habit, HabitRepeat repeat) {
+        repeat.setDaily(habit.repeatOptions().days().contains("Daily"));
         repeat.setSunday(habit.repeatOptions().days().contains("Sunday"));
         repeat.setMonday(habit.repeatOptions().days().contains("Monday"));
         repeat.setTuesday(habit.repeatOptions().days().contains("Tuesday"));
@@ -69,12 +75,14 @@ public class HabitMapper {
 
     public static HabitTarget toHabitTarget(HabitData habit) {
         HabitTarget target = new HabitTarget();
-        target.setTargetTime(
-            habit.target().time() != null 
-                ? habit.target().time().hours() + ":" + habit.target().time().minutes()
-                : "00:00"
-        );
-        target.setTargetMeasure(parseOrDefault(habit.target().number().measure(), 0));
+        String timeSpent = habit.target().timeSpent() != null
+                ? habit.target().timeSpent().hours() + ":" + habit.target().timeSpent().minutes()
+                : null;
+        String selectTime = habit.target().selectTime();
+        
+        target.setTimeSpent(timeSpent);
+        target.setSelectTime(selectTime);
+        target.setTargetMeasure(parseOrDefault(habit.target().number().measure()));
         target.setTargetMeasureDescription(habit.target().number().description());
         return target;
     }
@@ -88,11 +96,11 @@ public class HabitMapper {
         return timesOfDay;
     }
 
-    private static int parseOrDefault(String value, int defaultValue) {
+    private static int parseOrDefault(String value) {
         try {
             return Integer.parseInt(value);
         } catch (NumberFormatException e) {
-            return defaultValue;
+            return 0;
         }
     }
 }

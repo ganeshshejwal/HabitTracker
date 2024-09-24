@@ -12,26 +12,21 @@ import lombok.*;
 public class HabitLog {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "log_id")
+    private Integer logId;
+
     @Column(name = "habit_id")
     private Integer habitId;
 
     @Column(name = "log_date")
     private Date logDate;
 
-    @Column(name = "start_time")
-    private String startTime;
+    @Column(name = "target_name")
+    private String targetName;
 
-    @Column(name = "end_time")
-    private String endTime;
-
-    @Column(name = "target_in_measure")
-    private Integer targetMeasure;
-
-    @Column(name = "description")
-    private String targetMeasureDescription;
-
-    @Column(name = "no_of_times")
-    private Integer noOfTimes = 0;
+    @Column(name = "target_measure")
+    private String targetMeasure;
 
     @ManyToOne
     @JoinColumn(name = "habit_id", insertable = false, updatable = false)

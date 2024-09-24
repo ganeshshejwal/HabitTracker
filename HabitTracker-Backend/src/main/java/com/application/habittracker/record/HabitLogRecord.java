@@ -1,11 +1,11 @@
 package com.application.habittracker.record;
+import java.time.LocalDate;
 
 public record HabitLogRecord (
     Integer habitId,
-    Integer measure,
-    String description,
-    String beginTime,
-    String endTime  
+    LocalDate logDate,   
+    String targetName,   
+    String targetMeasure   
 ) 
 {}
     

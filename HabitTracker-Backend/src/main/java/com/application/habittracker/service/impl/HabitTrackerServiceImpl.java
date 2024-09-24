@@ -1,11 +1,14 @@
 package com.application.habittracker.service.impl;
 
 import java.util.List;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.util.PropertySource.Comparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +21,9 @@ import com.application.habittracker.mapper.HabitEntityMapper;
 import com.application.habittracker.mapper.HabitLogMapper;
 import com.application.habittracker.mapper.HabitMapper;
 import com.application.habittracker.record.HabitData;
+import com.application.habittracker.record.HabitDisplayReport;
 import com.application.habittracker.record.HabitLogRecord;
+import com.application.habittracker.record.HabitReport;
 import com.application.habittracker.repository.HabitDetailsRepository;
 import com.application.habittracker.repository.HabitLogRepository;
 import com.application.habittracker.repository.HabitRepeatRepository;
@@ -112,37 +117,92 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
             habitDataList.add(habitData);
         }
 
-        log.info("Habits Details : {}", habitDataList);
         return habitDataList;
     }
 
-    public List<HabitData> getAllHabitsOfToday() {
-        List<Integer> habitDetailsList = habitRepeatRepository.findTodaysHabitIds();
+    public List<HabitData> getAllHabitsOfToday(LocalDate date) {
+        Date sqlDate = Date.valueOf(date);
+        List<Integer> habitDetailsList = habitRepeatRepository.findTodaysHabitIds(sqlDate);
 
         List<HabitData> habitDataList2 = new ArrayList<>();
 
         for (Integer i : habitDetailsList) {
-            HabitData habitData = getHabitById(i).get();
-            if (!habitData.isDeleted()) {
-                habitDataList2.add(habitData);
+            Optional<HabitData> optionalHabitData = getHabitById(i);
+            if (optionalHabitData.isPresent()) {
+                HabitData habitData = optionalHabitData.get();
+                if (!habitData.isDeleted()) {
+                    habitDataList2.add(habitData);
+                }
             }
         }
+
+        // Define the order of time periods
+        List<String> timePeriodOrder = Arrays.asList("Morning", "Afternoon", "Evening", "Night");
+
+        // Custom Comparator
+        Comparator<HabitData> habitComparator = (h1, h2) -> {
+            List<String> times1 = h1.timeOfDay();
+            List<String> times2 = h2.timeOfDay();
+
+            // If both habits have no time of day, consider them equal
+            if (times1.isEmpty() && times2.isEmpty()) {
+                return 0;
+            }
+
+            // If one habit has no time of day, it comes after the other
+            if (times1.isEmpty())
+                return 1;
+            if (times2.isEmpty())
+                return -1;
+
+            // Compare the earliest time of day for each habit
+            String earliestTime1 = getEarliestTime(times1, timePeriodOrder);
+            String earliestTime2 = getEarliestTime(times2, timePeriodOrder);
+
+            int index1 = timePeriodOrder.indexOf(earliestTime1);
+            int index2 = timePeriodOrder.indexOf(earliestTime2);
+
+            // If both times are not in the list, compare them lexicographically
+            if (index1 == -1 && index2 == -1) {
+                return earliestTime1.compareTo(earliestTime2);
+            }
+
+            // If one time is not in the list, put it at the end
+            if (index1 == -1)
+                return 1;
+            if (index2 == -1)
+                return -1;
+
+            // Compare based on the order in timePeriodOrder
+            return Integer.compare(index1, index2);
+        };
+
+        // Sort the list
+        habitDataList2.sort(habitComparator);
+
         return habitDataList2;
+    }
+
+    private String getEarliestTime(List<String> times, List<String> timePeriodOrder) {
+        return times.stream()
+                .min(Comparator.comparingInt(time -> {
+                    int index = timePeriodOrder.indexOf(time);
+                    return index == -1 ? Integer.MAX_VALUE : index;
+                }))
+                .orElse("");
     }
 
     public HabitData updateHabit(Integer habitId, HabitData habit) {
         HabitDetails habitDetails = HabitMapper.toHabitDetails(habit);
         habitDetails.setHabitId(habitId);
         HabitRepeat habitRepeat = HabitMapper.toHabitRepeat(habit);
-        HabitTarget habitTarget = HabitMapper.toHabitTarget(habit);
-        HabitTimesOfDay habitTimesOfDay = HabitMapper.toHabitTimesOfDay(habit);
-
-        habitDetailsRepository.save(habitDetails);
-
         habitRepeat.setHabitId(habitId);
+        HabitTarget habitTarget = HabitMapper.toHabitTarget(habit);
         habitTarget.setHabitId(habitId);
+        HabitTimesOfDay habitTimesOfDay = HabitMapper.toHabitTimesOfDay(habit);
         habitTimesOfDay.setHabitId(habitId);
-
+        
+        habitDetailsRepository.save(habitDetails);
         habitRepeatRepository.save(habitRepeat);
         habitTargetRepository.save(habitTarget);
         habitTimesOfDayRepository.save(habitTimesOfDay);
@@ -160,4 +220,30 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
         habitLogRepository.save(createHabitLog);
     }
 
+    public List<Object[]> habitLogByDate() {
+        return habitLogRepository.habitLogsByDate();
+    }
+
+    public List<Object[]> getHabitLogsSummary() {
+        return habitLogRepository.getHabitLogsSummary();
+       
+    }
+
+    public List<List<HabitDisplayReport>> getHabitReport(HabitReport habitReport) {
+        List<HabitDetails> habitDetailsList = habitDetailsRepository.findByHabitName(habitReport.habitName());
+
+        List<Integer> habitIds = habitDetailsList.stream().map(HabitDetails::getHabitId).collect(Collectors.toList());
+        
+        List<List<HabitDisplayReport>> habitDisplayReports = new ArrayList<>();
+
+        for(Integer ids : habitIds) {
+            Date sDate = Date.valueOf(habitReport.startDate());
+            Date eDate = Date.valueOf(habitReport.endDate());
+            List<HabitDisplayReport> habitDisplayReport = habitLogRepository.findHabitReport(ids, sDate, eDate);
+            habitDisplayReports.add(habitDisplayReport);
+        }
+
+        log.info("Habit Reports {}",habitDisplayReports);
+        return habitDisplayReports;
+    }
 }
