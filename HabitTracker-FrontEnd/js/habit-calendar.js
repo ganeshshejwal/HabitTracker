@@ -182,14 +182,14 @@ function getHabitCounts(habitCounts) {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     for (const [date, count] of Object.entries(habitCounts)) {
-        console.log(habitLogsList);
         for (const element of habitLogsList) {
             if (element[0] === date) {
                 const habitDate = new Date(date);
                 if (element[1] < count) {
                     showCustomAlert("Habit Pending", `You have incomplete habits for ${formatDate(date)}`);
                     const formattedDate = formatDate(date);
-                    const targetElement = document.querySelector(`div[aria-label="${formattedDate}"]`);
+                    const targetElement = document.querySelector(`div[aria-label="${formattedDate}"]`) || document.querySelector(`div[aria-label="Today, ${formattedDate}"]`);
+                    console.log("Target",targetElement);
                     if (targetElement) {
                         targetElement.classList.add('incomplete-habit-text');
                     } else {
@@ -253,7 +253,7 @@ function showCustomAlert(title, message) {
         if (alertContainer.children.length === 0) {
             alertContainer.remove();
         }
-    }, 15000);
+    }, 5000);
 }
 
 function formatDate(dateString) {
@@ -266,6 +266,6 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchHabitLogs();
     setTimeout(() => {
         getHabitCounts(countOfHabits);
-        applyCustomStyles();
+       applyCustomStyles();
     }, 500);
 });
