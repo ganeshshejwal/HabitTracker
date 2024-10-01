@@ -218,7 +218,6 @@ document
         confirmButtonText: "OK",
       });
     }
-
     // Only Select End Date Not Start Date
     else if (
       habitData.habitName !== "" &&

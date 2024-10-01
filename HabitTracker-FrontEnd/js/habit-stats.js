@@ -7,6 +7,8 @@ const habitStatsBody = document.getElementById("habitStatsBody");
 
 filterButton.addEventListener("click", fetchHabitStatistics);
 
+
+
 function fetchHabitStatistics() {
     const habitName = habitNameInput.value;
     const startDate = startDateInput.value;
@@ -152,8 +154,153 @@ function fetchHabitStatistics() {
         </tr>
     `;
     habitStatsBody.innerHTML += cumulativeRow;
+    cTarget = cumulativeTarget;  // Total target sum
+    cMeasure = cumulativeMeasure;
+    des = description;
 }
 
+});
 
 
+let cTarget;  // Total target sum
+let cMeasure ;
+let des;
+
+function downloadTableAsPDF() {
+    // Create a new jsPDF instance
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Get the table element and habit name
+    const table = document.querySelector('table');
+    const habitName = document.getElementById('habitName').value;
+
+    // Set initial y position
+    let y = 20;
+
+    // Add title and habit name
+    doc.setFontSize(16);
+    doc.text('Habit Statistics', 14, y);
+    y += 10;
+    doc.setFontSize(14);
+    doc.text(`Habit: ${habitName}`, 14, y);
+    y += 10;
+
+    // Set font size for table content
+    doc.setFontSize(10);
+
+    // Get table headers
+    const headers = Array.from(table.querySelectorAll('thead th')).map(th => th.textContent);
+
+    // Get table rows
+    const rows = Array.from(table.querySelectorAll('tbody tr')).map(row => 
+        Array.from(row.querySelectorAll('td')).map(td => td.textContent)
+    );
+
+    // Add headers
+    doc.setTextColor(100);
+    headers.forEach((header, i) => {
+        doc.text(header, 14 + i * 45, y);
+    });
+    y += 7;
+
+    // Add rows
+    doc.setTextColor(0);
+    let cumulativeTarget = cTarget;
+    let cumulativeMeasure = cMeasure;
+    let description = des;
+    let suggestion = ''; // Initialize the suggestion
+
+    rows.forEach((row, index) => {
+        if (row.length === 4) { // Ensure it's a data row, not the summary row
+            row.forEach((cell, i) => {
+                doc.text(cell, 14 + i * 45, y);
+            });
+            y += 7;
+
+            // Extract cumulative data from the last row
+            if (index === rows.length - 1) {
+                [, cumulativeTarget, cumulativeMeasure] = row; // Ignore the suggestion from the row
+
+                // Parse cumulative target and measure values
+                const match = cumulativeTarget.match(/(\d+(\.\d+)?)\s*(.*)/);
+                if (match) {
+                    cumulativeTarget = parseFloat(match[1]);
+                    description = match[3]; // Save the description (e.g., Hrs, Steps)
+                }
+                cumulativeMeasure = parseFloat(cumulativeMeasure);
+            }
+
+            // Add a new page if we're near the bottom
+            if (y > 280) {
+                doc.addPage();
+                y = 20;
+            }
+        }
+    });
+
+    // Logic to calculate the suggestion
+    if (cumulativeMeasure === 0 && cumulativeTarget === 0) {
+        suggestion = "No Data Available";
+        doc.setTextColor(255, 0, 0); // Red
+    } else if (cumulativeMeasure >= cumulativeTarget) {
+        suggestion = "Good, all targets met";
+        doc.setTextColor(0, 255, 0); // Green
+    } else {
+        suggestion = "Need to Work";
+        doc.setTextColor(255, 0, 0); // Red
+    }
+
+    // Add cumulative totals to the PDF
+    y += 10;
+    doc.setTextColor(0); // Reset text color to black
+    doc.setFontSize(12);
+    doc.text(`Target: ${cumulativeTarget} ${description}`, 14, y);
+    y += 7;
+    doc.text(`Target Completion: ${cumulativeMeasure} ${description}`, 14, y);
+    y += 10;
+    doc.text(`Suggestion: ${suggestion}`, 14, y);
+
+    // Save the PDF
+    doc.save('habit_statistics.pdf');
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    const downloadButton = document.getElementById("downloadButton");
+    const habitNameInput = document.getElementById("habitName");
+    const startDateInput = document.getElementById("startDate");
+    const endDateInput = document.getElementById("endDate");
+
+    if (downloadButton) {
+        downloadButton.addEventListener("click", function() {
+            // Validate Habit Name
+            const habitName = habitNameInput.value.trim(); // Use trim() to remove any surrounding whitespace
+            if (!habitName) { // Check if the habit name is empty or null
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Input Required',
+                    text: 'Please Enter a Habit Name',
+                    confirmButtonText: 'OK'
+                });
+                return; // Stop if validation fails
+            }
+
+            // Validate Start and End Dates
+            const startDate = startDateInput.value;
+            const endDate = endDateInput.value;
+
+            if (!startDate || !endDate) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Missing Dates',
+                    text: 'Please Select Both Start and End Dates',
+                    confirmButtonText: 'OK'
+                });
+                return; // Stop if validation fails
+            }
+
+            // If validations pass, proceed with downloading the PDF
+            downloadTableAsPDF();
+        });
+    }
 });

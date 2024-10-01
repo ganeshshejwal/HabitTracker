@@ -253,7 +253,7 @@ function showCustomAlert(title, message) {
         if (alertContainer.children.length === 0) {
             alertContainer.remove();
         }
-    }, 5000);
+    }, 6000);
 }
 
 function formatDate(dateString) {
