@@ -2,6 +2,8 @@ package com.application.habittracker.repository;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Optional;
+import java.time.LocalDate;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -29,4 +31,6 @@ public interface HabitLogRepository extends JpaRepository<HabitLog, Integer> {
     List<HabitDisplayReport> findHabitReport(@Param("id") Integer id, 
                                              @Param("sDate") Date sDate, 
                                              @Param("eDate") Date eDate);
+
+        Optional<HabitLog> findByHabitIdAndLogDate(Integer habitId, LocalDate logDate);
 }

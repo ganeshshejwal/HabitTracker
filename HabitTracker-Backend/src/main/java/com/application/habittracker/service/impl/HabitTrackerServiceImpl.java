@@ -216,8 +216,20 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
     }
 
     public void saveHabitLog(HabitLogRecord habitLog) {
-        HabitLog createHabitLog = HabitLogMapper.toEntity(habitLog);
-        habitLogRepository.save(createHabitLog);
+        Optional<HabitLog> existingLog = habitLogRepository.findByHabitIdAndLogDate(
+            habitLog.habitId(), 
+            habitLog.logDate()
+        );
+    
+        if (existingLog.isPresent()) {
+            HabitLog logToUpdate = existingLog.get();
+            logToUpdate.setTargetName(habitLog.targetName());
+            logToUpdate.setTargetMeasure(habitLog.targetMeasure());
+            habitLogRepository.save(logToUpdate);
+        } else {
+            HabitLog newHabitLog = HabitLogMapper.toEntity(habitLog);
+            habitLogRepository.save(newHabitLog);
+        }
     }
 
     public List<Object[]> habitLogByDate() {
@@ -240,10 +252,10 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
             Date sDate = Date.valueOf(habitReport.startDate());
             Date eDate = Date.valueOf(habitReport.endDate());
             List<HabitDisplayReport> habitDisplayReport = habitLogRepository.findHabitReport(ids, sDate, eDate);
+            habitDisplayReport.sort(Comparator.comparing(HabitDisplayReport::getLogDate));
             habitDisplayReports.add(habitDisplayReport);
         }
 
-        log.info("Habit Reports {}",habitDisplayReports);
         return habitDisplayReports;
     }
 }
