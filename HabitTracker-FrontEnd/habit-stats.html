@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Habit Statistics</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/habit-stats.css">
+    <link rel="stylesheet" href="css/create-new-habit.css">
+</head>
+
+<body>
+    <div class="sidebar" id="sidebar">
+        <div class="img">
+            <img src="images/daily-tasks.png" alt="" srcset=""> <span>Habit Tracker</span>
+        </div>
+        <ul>
+            <li><a href="todays-habit.html">
+                    <div class="icon-container"><i class="fas fa-calendar-week"></i></div><span>Todays Habits</span>
+                </a>
+            </li>
+            <li><a href="create-new-habit.html">
+                    <div class="icon-container"><i class="fas fa-plus"></i></div><span>Create New Habit</span>
+                </a>
+            </li>
+            <li><a href="all-habits.html">
+                    <div class="icon-container"><i class="fas fa-clipboard-list"></i></div><span>All Habits</span>
+                </a>
+            </li>
+            <li><a href="habit-calendar.html">
+                    <div class="icon-container"><i class="fas fa-calendar-alt"></i></div><span>Habit Calendar</span>
+                </a>
+            </li>
+
+            <li><a href="habit-stats.html">
+                    <div class="icon-container"><i class="fas fa-chart-line"></i></div><span>Statistics</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="main-content" id="main-content">
+        <div class="container mb-4">
+            <div class="row">
+                <div class="mb-3">
+                    <h3>Habit Statistics</h3>
+                </div>
+
+                <div class="mb-3 col-md-5">
+                    <label for="habitName" class="form-label" id="label">Habit Name</label>
+                    <div class="input-icon">
+                        <i class="fa fa-list" aria-hidden="true" onclick="toggleRadioList()" id="habitIcon"></i>
+                        <input type="text" class="form-control" id="habitName"
+                            placeholder="Enter Habit Name   or   Select From List"
+                            spellcheck="false" autocomplete="off">
+                        <div class="invalid-feedback">
+                            Please Enter The Habit Name
+                        </div>
+                    </div>
+
+                    <div id="radioList" class="radio-list" style="display: none;">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1"
+                                onclick="setInputValue('Wake Up Early')">
+                            <label class="form-check-label" for="flexRadioDefault1">
+                                Wake Up Early
+                            </label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2"
+                                onclick="setInputValue('Meditation')">
+                            <label class="form-check-label" for="flexRadioDefault2">
+                                Meditation
+                            </label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3"
+                                onclick="setInputValue('Exercise')">
+                            <label class="form-check-label" for="flexRadioDefault3">
+                                Exercise
+                            </label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault4"
+                                onclick="setInputValue('Drink Water')">
+                            <label class="form-check-label" for="flexRadioDefault4">
+                                Drink Water
+                            </label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault5"
+                                onclick="setInputValue('Healthy Breakfast')">
+                            <label class="form-check-label" for="flexRadioDefault5">
+                                Healthy Breakfast
+                            </label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault6"
+                                onclick="setInputValue('Plan Your Day')">
+                            <label class="form-check-label" for="flexRadioDefault6">
+                                Plan Your Day
+                            </label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault7"
+                                onclick="setInputValue('Read')">
+                            <label class="form-check-label" for="flexRadioDefault7">
+                                Read
+                            </label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault8"
+                                onclick="setInputValue('Practice Gratitude')">
+                            <label class="form-check-label" for="flexRadioDefault8">
+                                Practice Gratitude
+                            </label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault9"
+                                onclick="setInputValue('Stretch')">
+                            <label class="form-check-label" for="flexRadioDefault9">
+                                Stretch
+                            </label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault10"
+                                onclick="setInputValue('Deep Work Session')">
+                            <label class="form-check-label" for="flexRadioDefault10">
+                                Deep Work Session
+                            </label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault11"
+                                onclick="setInputValue('Take Breaks')">
+                            <label class="form-check-label" for="flexRadioDefault11">
+                                Take Breaks
+                            </label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault12"
+                                onclick="setInputValue('Learn Something New')">
+                            <label class="form-check-label" for="flexRadioDefault12">
+                                Learn Something New
+                            </label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault13"
+                                onclick="setInputValue('Healthy Lunch')">
+                            <label class="form-check-label" for="flexRadioDefault13">
+                                Healthy Lunch
+                            </label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault15"
+                                onclick="setInputValue('Connect with Someone')">
+                            <label class="form-check-label" for="flexRadioDefault15">
+                                Connect with Someone
+                            </label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault16"
+                                onclick="setInputValue('Practice a Hobby')">
+                            <label class="form-check-label" for="flexRadioDefault16">
+                                Practice a Hobby
+                            </label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault17"
+                                onclick="setInputValue('Limit Screen Time')">
+                            <label class="form-check-label" for="flexRadioDefault17">
+                                Limit Screen Time
+                            </label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault18"
+                                onclick="setInputValue('Walk')">
+                            <label class="form-check-label" for="flexRadioDefault18">
+                                Walk
+                            </label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault20"
+                                onclick="setInputValue('Sleep Early')">
+                            <label class="form-check-label" for="flexRadioDefault20">
+                                Sleep Early
+                            </label>
+                        </div>
+
+                    </div>
+                </div>
+
+
+                <div class="mb-3 col-md-2">
+                    <label for="startDate" class="form-label">Start Date</label>
+                    <input type="date" class="form-control" id="startDate" name="startDate">
+                </div>
+                <div class="mb-3 col-md-2">
+                    <label for="endDate" class="form-label">End Date</label>
+                    <input type="date" class="form-control" id="endDate" name="endDate">
+                </div>
+
+                <div class="mb-3 col-md-2">
+                    <h1></h1>
+                    <button class="btn btn-primary mt-4" id="filterButton">Show Statistics</button>
+                </div>
+
+                <div class="mb-3 col-md-2">
+                    <button class="btn btn-success mt-4" id="downloadButton">Download PDF</button>
+                </div>
+
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Date</th>
+                            <th scope="col">Target</th>
+                            <th scope="col">Target Completion</th>
+                            <th scope="col">Remark</th>
+                        </tr>
+                    </thead>
+                    <tbody id="habitStatsBody">
+                        <!-- Rows will be dynamically added here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/backend-connection/backend-connection.js"></script>
+    <script src="js/habit-stats.js"></script>
+    <script src="js/create-new-habit.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+</body>
+
+</html>

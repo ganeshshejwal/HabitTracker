@@ -1,0 +1,201 @@
+#label {
+	font-weight: 500;
+}
+.main-content {
+	margin-left: var(--sidebar-width);
+	padding: 20px;
+	transition: margin-left 0.3s ease-in-out;
+}
+
+.sidebar.small {
+	width: var(--sidebar-small-width);
+}
+
+
+.sidebar.small a span {
+	opacity: 0;
+	width: 0;
+	overflow: hidden;
+}
+
+.main-content.small-sidebar {
+	margin-left: var(--sidebar-small-width);
+}
+
+.btn-group button {
+	border-radius: 5px;
+	width: 120px;
+	align-items: center;
+}
+
+.fa-chevron-down {
+	margin-left: 10px;
+}
+
+#habitName::placeholder {
+	color: #222121;
+}
+
+.input-icon {
+	position: relative;
+}
+
+.input-icon i {
+	position: absolute;
+	right: 10px;
+	top: 50%;
+	transform: translateY(-50%);
+	color: #141313;
+	cursor: pointer;
+}
+
+.input-icon .form-control {
+	padding-left: 30px;
+}
+
+.radio-list {
+	margin-top: 10px;
+	border: 1px solid #ddd;
+	padding: 10px;
+	background-color: #f9f9f9;
+	border-radius: 5px;
+	height: 146px;
+	overflow-y: scroll;
+}
+
+#months-btn {
+	background-color: #8e44ad;
+	color: #fff;
+	border: #fff;
+	border-radius: 5px;
+}
+
+#weeks-btn {
+	background-color: #229954;
+	color: #fff;
+	border: #fff;
+	border-radius: 5px;
+	margin-left: 10px;
+}
+
+#days-btn {
+	background-color: #2e86c1;
+	color: #fff;
+	border: #fff;
+	border-radius: 5px;
+	margin-left: 10px;
+}
+
+
+#months-options {
+	padding: 10px;
+	margin-top: 15px;
+	color: #ffffff;
+	border-radius: 5px;
+	background-color: #8e44ad;
+}
+
+#weeks-options {
+	padding: 10px;
+	margin-top: 15px;
+	color: #ffffff;
+	border-radius: 5px;
+	background-color: #229954;
+}
+
+#days-options {
+	padding: 10px;
+	margin-top: 15px;
+	color: #ffffff;
+	border-radius: 5px;
+	background-color: #2e86c1;
+}
+
+#repeat-options > div {
+    min-height: 100px; 
+}
+
+#months-options input[type="checkbox"], #weeks-options input[type="checkbox"], #days-options input[type="checkbox"] {
+	margin-right: 5px;
+}
+
+.d-none input[type="checkbox"] {
+	width: 15px;
+	height: 15px;
+	cursor: pointer;
+	position: relative;
+	margin-right: 10px;
+	top: 2px;
+	background-color: #f0f0f0;
+}
+
+.btn-outline-primary {
+	width: 135px;
+	color: #000000;
+	margin-right: 15px;
+}
+
+.btn-secondary.dropdown-toggle {
+	background-color: transparent;
+	border: 1px solid #ced4da;
+	color: black;
+	width: 216px;
+}
+
+.custom-time-input {
+	background-color: #ffffff;
+	border: 1px solid #ced4da;
+	border-radius: 0.25rem;
+	font-size: 16px;
+	color: #495057;
+}
+
+.btn-with-time {
+	position: relative;
+	margin-bottom: 10px;
+}
+
+.time-input-container {
+	display: none;
+	margin-top: 5px;
+	width: 130px;
+}
+
+input[type="submit"], input[type="reset"] {
+	padding: 5px 15px;
+}
+
+.btn-danger {
+	margin-left: 50px;
+}
+
+.hidden {
+    display: none;
+}
+
+#hours, #minutes, #target-number-input, #target-description { 
+	margin-top: 8px;
+}
+
+#time-input {
+	margin-top: 34px;
+}
+
+.target-text {
+	border: 1px solid #ddd;
+	border-radius: 4px;
+}
+
+.disabled-section {
+	cursor: not-allowed;
+	opacity: 0.6; 
+}
+.enabled-section {
+	cursor: default;
+	opacity: 1;
+}
+
+
+
+
+

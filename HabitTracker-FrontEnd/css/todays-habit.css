@@ -1,0 +1,88 @@
+.main-content {
+	margin-left: var(--sidebar-width);
+	padding: 20px;
+	transition: margin-left 0.3s ease-in-out;
+}
+
+.main-row {
+	display: flex; 
+	justify-content: space-between;
+}
+
+#date {
+	margin-top: 5px;
+}
+
+.card {
+	width: 518px;
+	min-height: 305px;
+	padding: 5px 11px;
+	background-color: #f4f6f83d;
+	box-shadow: 0 4px 8px rgba(7, 7, 7, 0.192);
+	border: none;
+}
+
+#habitName {
+	font-weight: 500;
+	font-size: 20px;
+	color: #17202a;
+}
+
+#progess-number {
+	height: 33px;
+	width: 65px;
+}
+
+#target-complete-name {
+	font-weight: 500;
+}
+
+#target-name {
+	color: #dc3545;
+	font-weight: 400;
+}
+
+#target_img {
+	width: 24px;
+	height: 24px;
+}
+
+#time_of_days {
+	width: 43px;
+	height: 43px;
+	margin-right: 5px;
+}
+
+#target-complete-name {
+	color: #2e86c1;
+}
+
+.form-check {
+	margin-left: 13px;
+}
+
+#description {
+	height: 33.7px;
+	width: 386px;
+}
+
+.btn-primary {
+	padding: 5px 25px;
+}
+
+#start-time, #end-time {
+	height: 33px;
+	font-size: 14px;
+	width: 115px;
+	text-indent: -1px;
+}
+
+#begin {
+	font-weight: 500;
+	color: #28a745;
+}
+
+#finish {
+	font-weight: 600;
+	color: #dc3545;
+}
